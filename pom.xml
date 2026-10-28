@@ -21,6 +21,7 @@
 
     <modules>
         <module>quantumlab-math</module>
+        <module>quantumlab-physics</module>
     </modules>
 
     <properties>
@@ -33,6 +34,7 @@
         <surefire.plugin.version>3.5.2</surefire.plugin.version>
     </properties>
 
+    <!-- Versions only. Nothing here is added to any module unless that module asks for it. -->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -42,9 +44,15 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>dev.quantumlab</groupId>
+                <artifactId>quantumlab-math</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
+    <!-- Inherited by EVERY module: only JUnit belongs here. -->
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
