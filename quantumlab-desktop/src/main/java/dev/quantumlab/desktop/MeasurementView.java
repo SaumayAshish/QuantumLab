@@ -4,6 +4,7 @@ package dev.quantumlab.desktop;
 import dev.quantumlab.physics.QubitState;
 import dev.quantumlab.physics.StandardBasis;
 import dev.quantumlab.simulation.ExperimentExporter;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -14,6 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
@@ -54,7 +56,8 @@ public final class MeasurementView {
                     + " rule. This models measurement statistics; it does not explain the"
                     + " measurement problem, and consciousness plays no role.";
 
-    private record Preset(String label, QubitState state) {}
+    private record Preset(String label, QubitState state) {
+    }
 
     private static final List<Preset> PRESETS =
             List.of(
@@ -100,6 +103,7 @@ public final class MeasurementView {
     private final ListView<String> history = new ListView<>();
     private final Label statusOut = new Label();
     private final ChartsPane charts = new ChartsPane();
+    private final ExplanationPane about = new ExplanationPane();
 
     public MeasurementView() {
         configureBasisChooser();
@@ -117,7 +121,9 @@ public final class MeasurementView {
         return root;
     }
 
-    /** Stops the worker thread. Call when the window closes. */
+    /**
+     * Stops the worker thread. Call when the window closes.
+     */
     public void shutdown() {
         worker.shutdownNow();
     }
@@ -227,7 +233,8 @@ public final class MeasurementView {
                         verdictOut,
                         charts.node(),
                         heading("History (latest trials, newest last)"),
-                        history);
+                        history,
+                        about.node());
         box.setPadding(new Insets(16));
         return box;
     }
