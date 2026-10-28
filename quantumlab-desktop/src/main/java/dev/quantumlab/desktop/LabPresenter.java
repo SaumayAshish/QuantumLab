@@ -8,6 +8,7 @@ import dev.quantumlab.simulation.Formatting;
 import dev.quantumlab.simulation.MeasurementSession;
 import dev.quantumlab.simulation.QuantumMeasurementConfig;
 import dev.quantumlab.simulation.TrialRecord;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,10 +28,10 @@ public final class LabPresenter {
      *
      * @param alphaRe real part of α (amplitude of |0⟩)
      * @param alphaIm imaginary part of α
-     * @param betaRe real part of β (amplitude of |1⟩)
-     * @param betaIm imaginary part of β
-     * @param basis measurement basis
-     * @param seed generator seed
+     * @param betaRe  real part of β (amplitude of |1⟩)
+     * @param betaIm  imaginary part of β
+     * @param basis   measurement basis
+     * @param seed    generator seed
      */
     public record Request(
             String alphaRe,
@@ -40,7 +41,9 @@ public final class LabPresenter {
             StandardBasis basis,
             String seed) {
 
-        /** Fills the fields from a state, using full-precision, locale-independent numbers. */
+        /**
+         * Fills the fields from a state, using full-precision, locale-independent numbers.
+         */
         public static Request fromState(QubitState state, StandardBasis basis, String seed) {
             return new Request(
                     Double.toString(state.alpha().re()),
@@ -52,7 +55,9 @@ public final class LabPresenter {
         }
     }
 
-    /** Entered amplitudes are rescaled silently only within this tolerance of unit length. */
+    /**
+     * Entered amplitudes are rescaled silently only within this tolerance of unit length.
+     */
     private static final double NORM_TOLERANCE = 1e-9;
 
     private MeasurementSession session;
@@ -127,7 +132,9 @@ public final class LabPresenter {
         return ResultsView.of(s);
     }
 
-    /** Clears all trials and rewinds the generator to the seed, so a rerun repeats exactly. */
+    /**
+     * Clears all trials and rewinds the generator to the seed, so a rerun repeats exactly.
+     */
     public ResultsView reset() {
         MeasurementSession s = requireExperiment();
         s.reset();
@@ -138,7 +145,18 @@ public final class LabPresenter {
         return ResultsView.of(requireExperiment());
     }
 
-    /** The last {@code max} trials, oldest first, one display line each. */
+    /**
+     * The numbers behind the charts.
+     *
+     * @param maxPoints at most this many points (at least 2) on the convergence curve
+     */
+    public ChartData chartData(int maxPoints) {
+        return ChartData.of(requireExperiment(), maxPoints);
+    }
+
+    /**
+     * The last {@code max} trials, oldest first, one display line each.
+     */
     public List<String> history(int max) {
         MeasurementSession s = requireExperiment();
         List<String> lines = new ArrayList<>();
@@ -151,12 +169,16 @@ public final class LabPresenter {
         return lines;
     }
 
-    /** The full experiment record as JSON (configuration, seed, statistics, history). */
+    /**
+     * The full experiment record as JSON (configuration, seed, statistics, history).
+     */
     public String exportJson() {
         return ExperimentExporter.toJson(requireExperiment());
     }
 
-    /** The trial history as CSV. */
+    /**
+     * The trial history as CSV.
+     */
     public String exportCsv() {
         return ExperimentExporter.historyCsv(requireExperiment());
     }

@@ -1,3 +1,4 @@
+
 package dev.quantumlab.desktop;
 
 import dev.quantumlab.physics.QubitState;
@@ -18,6 +19,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -33,7 +35,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
-import javafx.scene.Parent;
 
 /**
  * The measurement screen (modes B and C): prepare a qubit state, measure it repeatedly, and compare
@@ -46,6 +47,7 @@ import javafx.scene.Parent;
 public final class MeasurementView {
 
     private static final int HISTORY_LINES = 200;
+    private static final int CHART_POINTS = 300;
     private static final String DEFAULT_SEED = "12345";
     private static final String SCOPE_NOTE =
             "Each trial prepares a fresh copy of the state and measures it once, sampling the Born"
@@ -97,6 +99,7 @@ public final class MeasurementView {
     private final TableView<ResultsView.Row> table = new TableView<>();
     private final ListView<String> history = new ListView<>();
     private final Label statusOut = new Label();
+    private final ChartsPane charts = new ChartsPane();
 
     public MeasurementView() {
         configureBasisChooser();
@@ -222,6 +225,7 @@ public final class MeasurementView {
                         trialsOut,
                         table,
                         verdictOut,
+                        charts.node(),
                         heading("History (latest trials, newest last)"),
                         history);
         box.setPadding(new Insets(16));
@@ -252,9 +256,10 @@ public final class MeasurementView {
                     StateView state = presenter.prepare(request);
                     ResultsView results = presenter.results();
                     List<String> lines = presenter.history(HISTORY_LINES);
+                    ChartData chart = presenter.chartData(CHART_POINTS);
                     return () -> {
                         showState(state);
-                        showResults(results, lines);
+                        showResults(results, lines, chart);
                         setStatus("State prepared. Seed " + request.seed().trim() + ".", false);
                     };
                 });
@@ -266,8 +271,9 @@ public final class MeasurementView {
                 () -> {
                     ResultsView results = presenter.measure(count);
                     List<String> lines = presenter.history(HISTORY_LINES);
+                    ChartData chart = presenter.chartData(CHART_POINTS);
                     return () -> {
-                        showResults(results, lines);
+                        showResults(results, lines, chart);
                         setStatus("Ran trials; " + results.trials() + " in total.", false);
                     };
                 });
@@ -277,8 +283,9 @@ public final class MeasurementView {
         run(
                 () -> {
                     ResultsView results = presenter.reset();
+                    ChartData chart = presenter.chartData(CHART_POINTS);
                     return () -> {
-                        showResults(results, List.of());
+                        showResults(results, List.of(), chart);
                         setStatus("Trials cleared; the generator is back at its seed.", false);
                     };
                 });
@@ -356,7 +363,7 @@ public final class MeasurementView {
         noteOut.setText(s.note());
     }
 
-    private void showResults(ResultsView r, List<String> lines) {
+    private void showResults(ResultsView r, List<String> lines, ChartData chart) {
         trialsOut.setText(
                 r.trials() == 0
                         ? "No trials yet."
@@ -367,6 +374,7 @@ public final class MeasurementView {
         if (!lines.isEmpty()) {
             history.scrollTo(lines.size() - 1);
         }
+        charts.show(chart);
     }
 
     private void setStatus(String message, boolean error) {
