@@ -1,0 +1,15 @@
+target/
+*.class
+*.jar
+hs_err_pid*
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
+*.jfr
+/exports/
+.env
+*.pem
+*.key
