@@ -22,6 +22,7 @@
     <modules>
         <module>quantumlab-math</module>
         <module>quantumlab-physics</module>
+        <module>quantumlab-simulation</module>
     </modules>
 
     <properties>
@@ -47,6 +48,11 @@
             <dependency>
                 <groupId>dev.quantumlab</groupId>
                 <artifactId>quantumlab-math</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.quantumlab</groupId>
+                <artifactId>quantumlab-physics</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
