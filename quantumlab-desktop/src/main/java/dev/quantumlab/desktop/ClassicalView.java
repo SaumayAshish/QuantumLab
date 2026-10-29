@@ -1,6 +1,7 @@
 package dev.quantumlab.desktop;
 
 import dev.quantumlab.simulation.ExperimentExporter;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -11,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
@@ -90,7 +92,9 @@ public final class ClassicalView {
         return root;
     }
 
-    /** Stops the worker thread. Call when the window closes. */
+    /**
+     * Stops the worker thread. Call when the window closes.
+     */
     public void shutdown() {
         worker.shutdownNow();
     }
@@ -325,7 +329,7 @@ public final class ClassicalView {
                         ? "No runs yet."
                         : r.trials() + " runs (" + r.remaining() + " more allowed).");
         table.getItems().setAll(r.rows());
-        verdictOut.setText(r.verdict());
+        verdictOut.setText(r.trials() == 0 ? "" : r.verdict());
     }
 
     private void setStatus(String message, boolean error) {
@@ -354,7 +358,9 @@ public final class ClassicalView {
         return l;
     }
 
-    /** One link of the chain: a small caption above its current state. */
+    /**
+     * One link of the chain: a small caption above its current state.
+     */
     private static Node link(String caption, Label state) {
         state.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;");
         return new VBox(2, new Label(caption), state);
