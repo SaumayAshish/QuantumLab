@@ -9,7 +9,7 @@ here is claimed as working unless it was run.
 |-------|-------|--------|
 | 0 | Inspect the environment, plan | Done |
 | 1 | Mathematics: complex linear algebra, qubit, Born rule, measurement, decay model | Done |
-| 2 | First working cat laboratory with desktop UI (modes A, B, C) | In progress: screens done; documentation, ADRs and CI remain |
+| 2 | First working cat laboratory with desktop UI (modes A, B, C) | Screens, README, ADRs and a CI definition done; the CI workflow has not run |
 | 3 | Finite-difference 1D Schrödinger solver | Not started |
 | 4 | Barriers, tunnelling, composite systems, decoherence | Not started |
 | 5 | Desktop polish | Not started |
@@ -32,7 +32,9 @@ here is claimed as working unless it was run.
   by automated tests).
 - Reset followed by the same batch reproducing identical counts has been checked in tests, not yet
   by hand in the window.
-- No continuous-integration run exists yet.
+- The CI workflow in `.github/workflows/ci.yml` is written but has never run. It uses Temurin 25,
+  not the Microsoft build used locally.
+
 
 ## Known issues and polish
 
