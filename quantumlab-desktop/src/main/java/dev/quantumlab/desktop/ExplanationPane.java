@@ -1,6 +1,7 @@
 package dev.quantumlab.desktop;
 
 import dev.quantumlab.simulation.ModeExplanation;
+import java.util.List;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -12,9 +13,15 @@ final class ExplanationPane {
 
     private final TitledPane pane;
 
+    /** The panel for the measurement screen. */
     ExplanationPane() {
+        this(ExplanationText.forMeasurementScreen());
+    }
+
+    /** A panel with one tab per explanation, in the order given. */
+    ExplanationPane(List<ModeExplanation> explanations) {
         TabPane tabs = new TabPane();
-        for (ModeExplanation e : ExplanationText.forMeasurementScreen()) {
+        for (ModeExplanation e : explanations) {
             TextArea text = new TextArea(ExplanationText.format(e));
             text.setEditable(false);
             text.setWrapText(true);

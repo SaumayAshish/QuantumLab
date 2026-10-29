@@ -17,6 +17,11 @@ public final class ExplanationText {
 
     private ExplanationText() {}
 
+    /** The explanations relevant to the classical decay screen, most specific first, scope last. */
+    public static List<ModeExplanation> forClassicalScreen() {
+        return List.of(ExplanationCatalog.classical(), ExplanationCatalog.general());
+    }
+
     /** The explanations relevant to the measurement screen, most specific first, scope last. */
     public static List<ModeExplanation> forMeasurementScreen() {
         return List.of(
