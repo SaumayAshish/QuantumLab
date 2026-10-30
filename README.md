@@ -24,6 +24,12 @@ screen shows the observed frequencies, the theoretical probabilities, standard e
 deviation in σ, an observed-versus-theory chart, the convergence of the running frequency, and the
 trial history.
 
+**Quantum well (one dimension).** Solve −½ψ″ + Vψ = Eψ (ħ = m = 1) by finite differences for an
+infinite square well or a harmonic oscillator in a hard-walled box. The screen lists the lowest
+levels with the numerical energy, the analytic reference, the error and the relative error, and
+plots the wavefunction and probability density of the selected level (with the exact wavefunction
+for the well). Stationary states only: nothing evolves in time and nothing is measured.
+
 **Across both screens.**
 
 - Seeded, reproducible random numbers: the same seed gives the same results, and "reset" replays
@@ -47,8 +53,7 @@ trial history.
 
 Not implemented yet:
 
-- A numerical one-dimensional Schrödinger solver (finite differences), with the infinite well, then
-  barriers and tunnelling.
+- Barriers and tunnelling for the one-dimensional solver.
 - An entanglement-inspired two-qubit mode (tensor products, correlations).
 - A decoherence mode.
 - Charts for the classical decay screen.

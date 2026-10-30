@@ -19,6 +19,7 @@ class ExplanationCatalogTest {
                 ExplanationCatalog.classical(),
                 ExplanationCatalog.superposition(),
                 ExplanationCatalog.measurement(),
+                ExplanationCatalog.schrodinger1d(),
                 ExplanationCatalog.general());
     }
 

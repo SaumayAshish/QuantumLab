@@ -10,7 +10,7 @@ here is claimed as working unless it was run.
 | 0 | Inspect the environment, plan | Done |
 | 1 | Mathematics: complex linear algebra, qubit, Born rule, measurement, decay model | Done |
 | 2 | First working cat laboratory with desktop UI (modes A, B, C) | Screens, README, ADRs and a CI definition done; the CI workflow has not run |
-| 3 | Finite-difference 1D Schrödinger solver | In progress: solver, reference tests and presenter done; no screen yet |
+| 3 | Finite-difference 1D Schrödinger solver | In progress: solver, presenter and screen done (infinite well, harmonic oscillator); barriers and convergence study remain |
 | 4 | Barriers, tunnelling, composite systems, decoherence | Not started |
 | 5 | Desktop polish | Not started |
 | 6 | Optional Spring Boot service | Not started |
@@ -18,13 +18,14 @@ here is claimed as working unless it was run.
 
 ## Last verified run
 
-- Date: 2026-10-29.
+- Date: 2026-10-30.
 - Command: `mvn test` from the repository root.
 - Environment: Windows, Microsoft OpenJDK 25.0.5, Maven 3.9.16, JavaFX 25.0.1.
-- Result: BUILD SUCCESS. math 54, physics 79, simulation 91, desktop 49, 273 tests in total,
-  no failures.
-- Desktop application started with `mvn -pl quantumlab-desktop javafx:run`; both screens were
-  exercised by hand (preparation, single and batch runs, invalid input, explanation panels).
+- Result: BUILD SUCCESS, 329 tests (math 66, physics 102, simulation 95, desktop 66), no failures.
+- Desktop application started with `mvn -pl quantumlab-desktop javafx:run`; the Quantum well tab
+  was exercised by hand (infinite well, harmonic oscillator in a wide and a narrow box, invalid
+  input).
+
 
 ## Not yet verified
 
@@ -47,3 +48,5 @@ here is claimed as working unless it was run.
 - The two views duplicate their worker-thread plumbing; it should be extracted.
 - The footer scope notes are hard-coded text rather than taken from the explanation catalogue.
 - The interference curve exists in the simulation module but has no screen.
+- Switching the potential changes the input fields but not the table until Solve is pressed.
+- The grid-point error message says "use a decimal point, e.g. 0.5", which is wrong for whole numbers.

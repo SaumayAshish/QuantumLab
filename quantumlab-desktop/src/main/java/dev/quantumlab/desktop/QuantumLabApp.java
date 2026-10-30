@@ -12,19 +12,23 @@ public final class QuantumLabApp extends Application {
 
     private ClassicalView classical;
     private MeasurementView measurement;
+    private SchrodingerView schrodinger;
 
     @Override
     public void start(Stage stage) {
         classical = new ClassicalView();
         measurement = new MeasurementView();
+        schrodinger = new SchrodingerView();
 
         Tab modeA = new Tab("A · Classical decay", classical.root());
         modeA.setClosable(false);
         Tab modeBC = new Tab("B/C · Superposition and measurement", measurement.root());
         modeBC.setClosable(false);
+        Tab well = new Tab("Quantum well (1D)", schrodinger.root());
+        well.setClosable(false);
 
         stage.setTitle(QuantumLabInfo.NAME + " " + QuantumLabInfo.VERSION);
-        stage.setScene(new Scene(new TabPane(modeA, modeBC), 1100, 760));
+        stage.setScene(new Scene(new TabPane(modeA, modeBC, well), 1100, 760));
         stage.show();
     }
 
@@ -35,6 +39,9 @@ public final class QuantumLabApp extends Application {
         }
         if (measurement != null) {
             measurement.shutdown();
+        }
+        if (schrodinger != null) {
+            schrodinger.shutdown();
         }
     }
 

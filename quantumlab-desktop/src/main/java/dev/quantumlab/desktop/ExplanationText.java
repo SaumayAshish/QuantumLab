@@ -15,19 +15,31 @@ public final class ExplanationText {
     static final String DOES_NOT_MODEL_HEADING = "What it does not model";
     private static final String NONE = "• (none stated)";
 
-    private ExplanationText() {}
+    private ExplanationText() {
+    }
 
-    /** The explanations relevant to the classical decay screen, most specific first, scope last. */
+    /**
+     * The explanations relevant to the one-dimensional Schrödinger screen, scope last.
+     */
+    public static List<ModeExplanation> forSchrodingerScreen() {
+        return List.of(ExplanationCatalog.schrodinger1d(), ExplanationCatalog.general());
+    }
+
+    /**
+     * The explanations relevant to the classical decay screen, most specific first, scope last.
+     */
     public static List<ModeExplanation> forClassicalScreen() {
         return List.of(ExplanationCatalog.classical(), ExplanationCatalog.general());
     }
 
-    /** The explanations relevant to the measurement screen, most specific first, scope last. */
+    /**
+     * The explanations relevant to the measurement screen, most specific first, scope last.
+     */
     public static List<ModeExplanation> forMeasurementScreen() {
         return List.of(
-                ExplanationCatalog.measurement(),
-                ExplanationCatalog.superposition(),
-                ExplanationCatalog.general());
+            ExplanationCatalog.measurement(),
+            ExplanationCatalog.superposition(),
+            ExplanationCatalog.general());
     }
 
     public static String format(ModeExplanation e) {
