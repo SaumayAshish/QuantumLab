@@ -30,6 +30,12 @@ levels with the numerical energy, the analytic reference, the error and the rela
 plots the wavefunction and probability density of the selected level (with the exact wavefunction
 for the well). Stationary states only: nothing evolves in time and nothing is measured.
 
+**Convergence.** Refine the grid step by step (each step halves the spacing h) and see the error of
+one energy level against its exact value. The screen shows the observed order, computed from the
+numbers, and a log–log chart of the error with a slope-2 guide. For the infinite well and for the
+oscillator in a wide box the order is 2. For an oscillator in a narrow box the fixed wall error
+dominates, the error stops shrinking, and the summary says so.
+
 **Across both screens.**
 
 - Seeded, reproducible random numbers: the same seed gives the same results, and "reset" replays

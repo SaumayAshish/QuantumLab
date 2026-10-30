@@ -264,7 +264,7 @@ public final class SchrodingerPresenter {
         return base;
     }
 
-    private static int wholeNumber(String text, String field, int min, int max) {
+    static int wholeNumber(String text, String field, int min, int max) {
         double v = InputParser.number(text, field);
         if (v != Math.rint(v)) {
             throw new InvalidInputException(field + " must be a whole number.");
