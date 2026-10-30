@@ -246,7 +246,7 @@ public final class ExplanationCatalog {
                     + "a qubit. The state is written down, not produced by an "
                     + "interaction.",
                 "No dynamics and no decoherence: nothing evolves in time on this screen "
-                    + "(decoherence is planned as Mode E).",
+                    + "(the decoherence screen dephases a single qubit, not this pair).",
                 "The probabilities are exact, not sampled, and no single outcome or "
                     + "collapse is shown. This does not solve the measurement problem "
                     + "and favours no interpretation.",
@@ -254,6 +254,52 @@ public final class ExplanationCatalog {
                     + "classical variable for these two qubits. It says nothing about "
                     + "consciousness or about a cat, and no spatial separation or "
                     + "signalling between the two systems is modelled."));
+    }
+
+    /**
+     * Mode E: a qubit losing its coherence.
+     */
+    public static ModeExplanation decoherence() {
+        return new ModeExplanation(
+            "Decoherence — a qubit losing its coherence",
+            "A single two-level system, such as the nucleus, starts in a pure superposition and "
+                + "is then dephased at a rate you choose: the interference between its two "
+                + "outcomes fades, while the chances of \"not decayed\" and \"decayed\" do "
+                + "not change. This screen shows how the statistics in each basis, the "
+                + "interference fringe and the purity change with time.",
+            "Density matrix ρ = |ψ⟩⟨ψ|: ρ₀₀ = |α|², ρ₁₁ = |β|², ρ₀₁ = αβ*.\n"
+                + "Pure dephasing at rate γ: ρ₀₁(t) = ρ₀₁(0) e^{−γt}, with ρ₀₀ and ρ₁₁ "
+                + "unchanged. Equivalently, a random Z flip with probability "
+                + "q = (1 − e^{−γt})/2: ρ → (1 − q) ρ + q ZρZ.\n"
+                + "Born rule for a mixed state: P(k) = ⟨bₖ|ρ|bₖ⟩.\n"
+                + "Interference fringe: P(φ) = ½ + Re(ρ₀₁ e^{iφ}) for the outcome "
+                + "(|0⟩ + e^{iφ}|1⟩)/√2; its visibility is 2|ρ₀₁|.\n"
+                + "Purity Tr ρ² = ρ₀₀² + ρ₁₁² + 2|ρ₀₁|²; entropy −Σ λ log₂ λ with "
+                + "λ = (1 ± r)/2, where r is the length of the Bloch vector.",
+            List.of(
+                "How a superposition becomes, statistically, indistinguishable from a "
+                    + "classical mixture of its two outcomes when its coherence decays, "
+                    + "while the Z-basis chances stay as they were.",
+                "Exact probabilities in the Z, X or Y basis at t = 0, at the chosen time "
+                    + "and in the long-time limit, with the visibility of the "
+                    + "interference fringe and the purity and entropy of the qubit.",
+                "The difference between losing coherence and a single outcome appearing: "
+                    + "the state stays a density matrix of probabilities."),
+            List.of(
+                "The dephasing rate is an input you choose, not derived from any physical "
+                    + "environment: this is a phenomenological model of one qubit, and no "
+                    + "environment is simulated.",
+                "Not the cat: no macroscopic cat is modelled and a cat is not treated as a "
+                    + "qubit. Decoherence of a real cat would involve an enormous number "
+                    + "of environmental degrees of freedom that are not simulated here.",
+                "Decoherence does not by itself explain why one outcome is observed: no "
+                    + "single outcome or collapse is shown. This does not solve the "
+                    + "measurement problem and favours no interpretation.",
+                "Only pure dephasing is modelled: no energy relaxation (the Z-basis chances "
+                    + "never change), no motion under the qubit's own Hamiltonian and no "
+                    + "revival of coherence.",
+                "The probabilities are exact, not sampled, and nothing here concerns "
+                    + "consciousness."));
     }
 
     /**
@@ -282,7 +328,9 @@ public final class ExplanationCatalog {
                     + "barrier, by Crank–Nicolson stepping.",
                 "Two qubits, a nucleus and an idealised detector, as an entangled state or "
                     + "a classical mixture, compared by joint measurement statistics "
-                    + "and the CHSH quantity."),
+                    + "and the CHSH quantity.",
+                "One qubit losing its coherence at an assumed dephasing rate, and what that "
+                    + "does to its statistics, its interference fringe and its purity."),
             List.of(
                 "QuantumLab does not simulate a macroscopic cat and does not solve the "
                     + "quantum measurement problem.",
@@ -295,6 +343,8 @@ public final class ExplanationCatalog {
                 "The composite-system screen is a separate two-qubit model: its detector "
                     + "is a two-level stand-in and it does not describe the cat or a "
                     + "real apparatus.",
-                "Decoherence (Mode E) is planned but not implemented."));
+                "The decoherence screen is a separate single-qubit model with an assumed "
+                    + "dephasing rate: it does not describe the cat, a real environment "
+                    + "or the appearance of a single outcome."));
     }
 }

@@ -23,6 +23,7 @@ class ExplanationCatalogTest {
             ExplanationCatalog.tunnelling(),
             ExplanationCatalog.wavePacket(),
             ExplanationCatalog.composite(),
+            ExplanationCatalog.decoherence(),
             ExplanationCatalog.general());
     }
 
@@ -70,13 +71,13 @@ class ExplanationCatalogTest {
     }
 
     @Test
-    @DisplayName("the general scope disclaims the cat, the measurement problem, consciousness, and unbuilt modes")
+    @DisplayName("the general scope disclaims the cat, the measurement problem, consciousness, and and keeps the decoherence screen separate")
     void generalCaveats() {
         List<String> no = ExplanationCatalog.general().doesNotRepresent();
         assertTrue(anyContains(no, "does not simulate a macroscopic cat"));
         assertTrue(anyContains(no, "measurement problem"));
         assertTrue(anyContains(no, "consciousness"));
-        assertTrue(anyContains(no, "planned but not implemented"));
+        assertTrue(anyContains(no, "decoherence screen is a separate single-qubit model"));
     }
 
     @Test

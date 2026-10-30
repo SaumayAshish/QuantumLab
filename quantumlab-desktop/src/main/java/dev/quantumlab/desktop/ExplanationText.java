@@ -47,6 +47,13 @@ public final class ExplanationText {
     }
 
     /**
+     * The explanations relevant to the decoherence screen, scope last.
+     */
+    public static List<ModeExplanation> forDecoherenceScreen() {
+        return List.of(ExplanationCatalog.decoherence(), ExplanationCatalog.general());
+    }
+
+    /**
      * The explanations relevant to the classical decay screen, most specific first, scope last.
      */
     public static List<ModeExplanation> forClassicalScreen() {

@@ -58,7 +58,6 @@ class SchrodingerExplanationTest {
         assertTrue(anyContains(no, "does not simulate a macroscopic cat"));
         assertTrue(anyContains(no, "measurement problem"));
         assertTrue(anyContains(no, "consciousness"));
-        assertTrue(anyContains(no, "planned but not implemented"));
         assertTrue(anyContains(no, "do not describe the cat"));
     }
 }

@@ -43,12 +43,11 @@ class CompositeExplanationTest {
     }
 
     @Test
-    @DisplayName("the overall scope lists the composite model, keeps it separate from the cat, and still says decoherence is not implemented")
+    @DisplayName("the overall scope lists the composite model and keeps it separate from the cat")
     void generalScope() {
         ModeExplanation g = ExplanationCatalog.general();
         assertTrue(anyContains(g.represents(), "Two qubits, a nucleus and an idealised detector"));
         assertTrue(anyContains(g.doesNotRepresent(), "composite-system screen is a separate two-qubit model"));
-        assertTrue(anyContains(g.doesNotRepresent(), "Decoherence (Mode E) is planned but not implemented"));
         assertFalse(anyContains(g.doesNotRepresent(), "Entanglement of the nucleus with the apparatus (Mode D)"));
     }
 }

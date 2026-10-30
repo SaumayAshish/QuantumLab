@@ -7,7 +7,9 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 
-/** Application entry point. Views are thin; all experiment logic lives in quantumlab-simulation. */
+/**
+ * Application entry point. Views are thin; all experiment logic lives in quantumlab-simulation.
+ */
 public final class QuantumLabApp extends Application {
 
     private ClassicalView classical;
@@ -17,6 +19,7 @@ public final class QuantumLabApp extends Application {
     private TunnellingView tunnelling;
     private WavePacketView wavePacket;
     private CompositeView composite;
+    private DecoherenceView decoherence;
 
     @Override
     public void start(Stage stage) {
@@ -27,6 +30,7 @@ public final class QuantumLabApp extends Application {
         tunnelling = new TunnellingView();
         wavePacket = new WavePacketView();
         composite = new CompositeView();
+        decoherence = new DecoherenceView();
 
         Tab modeA = new Tab("A · Classical decay", classical.root());
         modeA.setClosable(false);
@@ -42,9 +46,11 @@ public final class QuantumLabApp extends Application {
         packet.setClosable(false);
         Tab modeD = new Tab("D · Composite system", composite.root());
         modeD.setClosable(false);
+        Tab modeE = new Tab("E · Decoherence", decoherence.root());
+        modeE.setClosable(false);
 
         stage.setTitle(QuantumLabInfo.NAME + " " + QuantumLabInfo.VERSION);
-        stage.setScene(new Scene(new TabPane(modeA, modeBC, well, conv, tunnel, packet, modeD), 1100, 760));
+        stage.setScene(new Scene(new TabPane(modeA, modeBC, well, conv, tunnel, packet, modeD, modeE), 1100, 760));
         stage.show();
     }
 
@@ -70,6 +76,9 @@ public final class QuantumLabApp extends Application {
         }
         if (composite != null) {
             composite.shutdown();
+        }
+        if (decoherence != null) {
+            decoherence.shutdown();
         }
     }
 
