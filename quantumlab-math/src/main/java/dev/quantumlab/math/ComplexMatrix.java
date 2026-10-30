@@ -235,4 +235,30 @@ public final class ComplexMatrix {
                     "Shape mismatch: " + rows + "x" + cols + " vs " + o.rows + "x" + o.cols);
         }
     }
+    /**
+     * The Kronecker product {@code this ⊗ o}, of shape {@code (rows·o.rows) × (cols·o.cols)}: entry
+     * {@code (a·o.rows + c, b·o.cols + d)} is {@code this[a,b] · o[c,d]}.
+     */
+    public ComplexMatrix kronecker(ComplexMatrix o) {
+        int rr = rows * o.rows;
+        int cc = cols * o.cols;
+        double[] r = new double[rr * cc];
+        double[] i = new double[rr * cc];
+        for (int a = 0; a < rows; a++) {
+            for (int b = 0; b < cols; b++) {
+                double ar = re[a * cols + b];
+                double ai = im[a * cols + b];
+                for (int c = 0; c < o.rows; c++) {
+                    for (int d = 0; d < o.cols; d++) {
+                        double br = o.re[c * o.cols + d];
+                        double bi = o.im[c * o.cols + d];
+                        int index = (a * o.rows + c) * cc + (b * o.cols + d);
+                        r[index] = ar * br - ai * bi;
+                        i[index] = ar * bi + ai * br;
+                    }
+                }
+            }
+        }
+        return new ComplexMatrix(rr, cc, r, i);
+    }
 }

@@ -229,4 +229,22 @@ public final class ComplexVector {
                     "Dimension mismatch: " + re.length + " vs " + o.re.length);
         }
     }
+    /**
+     * The tensor (Kronecker) product {@code this ⊗ o}. Entry {@code a·n + b} is
+     * {@code this[a] · o[b]} with {@code n = o.dimension()}, so the first factor is the more
+     * significant index.
+     */
+    public ComplexVector tensor(ComplexVector o) {
+        int m = re.length;
+        int n = o.re.length;
+        double[] r = new double[m * n];
+        double[] i = new double[m * n];
+        for (int a = 0; a < m; a++) {
+            for (int b = 0; b < n; b++) {
+                r[a * n + b] = re[a] * o.re[b] - im[a] * o.im[b];
+                i[a * n + b] = re[a] * o.im[b] + im[a] * o.re[b];
+            }
+        }
+        return new ComplexVector(r, i);
+    }
 }
