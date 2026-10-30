@@ -24,6 +24,22 @@ screen shows the observed frequencies, the theoretical probabilities, standard e
 deviation in σ, an observed-versus-theory chart, the convergence of the running frequency, and the
 trial history.
 
+**Composite system (mode D).** A nucleus and an idealised detector as one two-qubit state
+α|00⟩ + β|11⟩, compared with the classical mixture that has the same Z-basis chances. Choose a
+measurement basis (Z, X or Y) for each qubit and a relative phase, and see the joint outcome
+probabilities for both. In Z/Z the two are identical; in other bases they differ, which is what
+makes the state entangled rather than merely correlated. The screen also reports concurrence,
+entanglement entropy and purity, and a CHSH test: the best value for the entangled state (up to
+2√2, above the classical bound of 2) against the best value for the mixture (never above 2). Each
+qubit on its own looks the same in both cases; the difference is only in the correlations. The
+detector is an idealised two-level system, not a model of a real apparatus.
+
+**Wave packet.** A Gaussian wave packet moves towards a rectangular barrier. The time-dependent
+Schrödinger equation is stepped forward with the Crank–Nicolson scheme, which conserves the norm
+to rounding. The screen shows the density splitting into a reflected and a transmitted part and
+compares the final split with the stationary transmission T(E) averaged over the packet's
+energies. One particle in one dimension; nothing is measured.
+
 **Quantum well (one dimension).** Solve −½ψ″ + Vψ = Eψ (ħ = m = 1) by finite differences for an
 infinite square well or a harmonic oscillator in a hard-walled box. The screen lists the lowest
 levels with the numerical energy, the analytic reference, the error and the relative error, and
@@ -43,7 +59,7 @@ independent plane-wave calculation. The screen compares the quantum answer with 
 barrier top, and for two barriers shows the resonances. Stationary only: no wave packet moves, and
 nothing is measured.
 
-**Across both screens.**
+**Across the screens.**
 
 - Seeded, reproducible random numbers: the same seed gives the same results, and "reset" replays
   them exactly.
@@ -55,9 +71,12 @@ nothing is measured.
 
 **Libraries (tested, partly without a screen yet).**
 
-- `quantumlab-math`: immutable complex numbers, vectors and matrices.
+- `quantumlab-math`: immutable complex numbers, vectors and matrices, including tensor products,
+  and a symmetric tridiagonal eigenvalue solver.
 - `quantumlab-physics`: qubit states and operators, the Born rule, projective measurement in the
-  Z, X and Y bases, an exponential decay model, and the classical apparatus chain.
+  Z, X and Y bases, an exponential decay model, the classical apparatus chain, the finite-difference
+  Schrödinger solver, barrier scattering, Crank–Nicolson time evolution, and two-qubit states with
+  entanglement measures and CHSH.
 - `quantumlab-simulation`: experiment sessions, outcome logs, statistics, JSON/CSV export, and the
   explanation catalogue. It also contains a phase-dependence (interference) curve for a qubit,
   which has no screen yet.
@@ -66,20 +85,19 @@ nothing is measured.
 
 Not implemented yet:
 
-- Barriers and tunnelling for the one-dimensional solver.
-- An entanglement-inspired two-qubit mode (tensor products, correlations).
-- A decoherence mode.
+- A decoherence mode (mode E).
 - Charts for the classical decay screen.
 - Desktop polish: layout, colours, a logarithmic axis for the convergence chart.
 - An optional Spring Boot service.
-- “a time-dependent wave packet hitting a barrier.”
 
 ## Scientific scope
 
-QuantumLab shows measurement statistics for a two-level system and a classical thought experiment
-around it. It does not solve the measurement problem, it does not model a whole cat, and
-consciousness plays no role in anything it computes. "Superposition" here means a normalised vector
-of complex amplitudes and nothing more. The in-app explanation panels and the tests that guard
+QuantumLab shows measurement statistics for small quantum systems and a classical thought
+experiment around them. It does not solve the measurement problem, it does not model a whole cat,
+and consciousness plays no role in anything it computes. "Superposition" here means a normalised
+vector of complex amplitudes and nothing more. The CHSH numbers on the composite screen are the
+quantum-mechanical predictions for the chosen state and settings; the application does not run or
+simulate a loophole-free Bell experiment. The in-app explanation panels and the tests that guard
 their wording are the authoritative statement of scope for each screen.
 
 ## Requirements
@@ -110,7 +128,8 @@ option `--enable-native-access=ALL-UNNAMED`.
 
 ```
 quantumlab-math         complex linear algebra
-quantumlab-physics      qubits, Born rule, measurement, decay model, apparatus chain
+quantumlab-physics      qubits, Born rule, measurement, decay model, Schrödinger solver,
+                        scattering, time evolution, two-qubit states
 quantumlab-simulation   experiment sessions, statistics, export, explanations
 quantumlab-desktop      JavaFX application
 docs/                   architecture decisions, mathematics notes, validation notes
