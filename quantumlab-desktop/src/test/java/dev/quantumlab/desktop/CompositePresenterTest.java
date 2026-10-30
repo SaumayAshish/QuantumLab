@@ -180,7 +180,7 @@ class CompositePresenterTest {
     @Test
     @DisplayName("a nucleus that is certainly not decayed (or certainly decayed) is not entangled and cannot violate CHSH")
     void productStates() {
-        for (String p0 : new String[] {"1", "0"}) {
+        for (String p0 : new String[]{"1", "0"}) {
             Result r = run(p0, "0.4", X, X);
             assertEquals("0.000000", r.concurrence());
             assertEquals("0.000000 bits", r.entropy());
@@ -221,8 +221,8 @@ class CompositePresenterTest {
     @Test
     @DisplayName("the mixture never exceeds 2 and the entangled value never exceeds Tsirelson's bound")
     void bounds() {
-        for (String p0 : new String[] {"0", "0.1", "0.5", "0.77", "1"}) {
-            for (String phase : new String[] {"0", "1.3", "-2.9"}) {
+        for (String p0 : new String[]{"0", "0.1", "0.5", "0.77", "1"}) {
+            for (String phase : new String[]{"0", "1.3", "-2.9"}) {
                 Result r = run(p0, phase, Z, Z);
                 assertTrue(number(r.chshMixtureBest()) <= 2.0 + 1e-9);
                 assertTrue(number(r.chshMixtureSame()) <= 2.0 + 1e-9);
@@ -315,7 +315,9 @@ class CompositePresenterTest {
     @DisplayName("a tiny amount of entanglement is still reported as entanglement and as a difference")
     void tinyEntanglementIsDetected() {
         Result r = run("0.99999999", "0", X, X);
-        assertTrue(r.verdictBases().contains("different joint statistics"), r.verdictBases());
+        assertTrue(r.verdictBases().contains("differ only slightly"), r.verdictBases());
+        Result bigger = run("0.9999999", "0", X, X);
+        assertTrue(bigger.verdictBases().contains("different joint statistics"), bigger.verdictBases());
         assertTrue(r.entanglementNote().startsWith("Entangled"), r.entanglementNote());
         assertTrue(number(r.concurrence()) > 0.0001);
     }
@@ -327,5 +329,14 @@ class CompositePresenterTest {
         assertTrue(r.alone().contains("detector |0⟩ 0.300000 (entangled) and 0.300000 (mixture)"), r.alone());
         Result x = run("0.3", "0", Z, X);
         assertTrue(x.alone().contains("detector |+⟩ 0.500000 (entangled)"), x.alone());
+    }
+
+    @Test
+    @DisplayName("a typed pi/2 rounded to 1.5708 is reported as hardly different, not as different")
+    void roundedPhaseIsHardlyDifferent() {
+        Result r = run("0.5", "1.5708", Y, Y);
+        assertTrue(r.verdictBases().contains("differ only slightly (by at most 9.183e-07"), r.verdictBases());
+        assertTrue(r.verdictBases().contains("hardly tell them apart"), r.verdictBases());
+        assertEquals("0.250001", r.rows().get(0).entangled());
     }
 }

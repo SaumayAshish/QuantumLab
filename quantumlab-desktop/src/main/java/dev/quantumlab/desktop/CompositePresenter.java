@@ -24,7 +24,9 @@ import java.util.List;
  */
 public final class CompositePresenter {
 
-    /** The measurement bases offered for each qubit. */
+    /**
+     * The measurement bases offered for each qubit.
+     */
     public enum BasisChoice {
         COMPUTATIONAL,
         HADAMARD,
@@ -44,18 +46,26 @@ public final class CompositePresenter {
     private static final double MAX_PHASE = 1_000.0;
     private static final double NOISE = 1e-12;
     private static final double ENTANGLED_ABOVE = 1e-9;
+    private static final double SAME_BELOW = 1e-9;
+    private static final double SLIGHT_BELOW = 1e-4;
 
-    /** Raw field contents and the two chosen bases. */
+    /**
+     * Raw field contents and the two chosen bases.
+     */
     public record Request(
-        String notDecayed, String phase, BasisChoice nucleusBasis, BasisChoice detectorBasis) {}
+        String notDecayed, String phase, BasisChoice nucleusBasis, BasisChoice detectorBasis) {
+    }
 
-    /** One joint outcome: the chance for the entangled state, for the mixture, and their difference. */
-    public record RowView(String outcome, String entangled, String mixture, String difference) {}
+    /**
+     * One joint outcome: the chance for the entangled state, for the mixture, and their difference.
+     */
+    public record RowView(String outcome, String entangled, String mixture, String difference) {
+    }
 
     /**
      * @param entangledCurve the correlation E when both qubits are measured along matching axes at
-     *     polar angle θ (degrees, 0 to 180), for the entangled state
-     * @param mixtureCurve the same for the classical mixture
+     *                       polar angle θ (degrees, 0 to 180), for the entangled state
+     * @param mixtureCurve   the same for the classical mixture
      */
     public record Result(
         String setup,
@@ -76,7 +86,8 @@ public final class CompositePresenter {
         String chshMaximum,
         String chshVerdict,
         List<SeriesPoint> entangledCurve,
-        List<SeriesPoint> mixtureCurve) {}
+        List<SeriesPoint> mixtureCurve) {
+    }
 
     public Result compute(Request r) {
         if (r == null || r.nucleusBasis() == null || r.detectorBasis() == null) {
@@ -134,12 +145,22 @@ public final class CompositePresenter {
                 + " (entangled) and "
                 + probability(pm[0][0] + pm[1][0])
                 + " (mixture).";
-        String verdictBases =
-            maxDifference < 1e-9
-                ? "In these two bases the entangled state and the classical mixture give the same "
-                + "statistics, so this choice cannot tell them apart."
-                : "In these two bases the entangled state and the classical mixture give "
-                + "different joint statistics.";
+        String verdictBases;
+        if (maxDifference < SAME_BELOW) {
+            verdictBases =
+                "In these two bases the entangled state and the classical mixture give the same "
+                    + "statistics, so this choice cannot tell them apart.";
+        } else if (maxDifference < SLIGHT_BELOW) {
+            verdictBases =
+                "In these two bases the entangled state and the classical mixture differ only "
+                    + "slightly (by at most "
+                    + ConvergencePresenter.scientific(maxDifference)
+                    + "), so these bases hardly tell them apart.";
+        } else {
+            verdictBases =
+                "In these two bases the entangled state and the classical mixture give "
+                    + "different joint statistics.";
+        }
 
         double conc = entangled.concurrence();
         boolean isEntangled = conc > ENTANGLED_ABOVE;
@@ -223,7 +244,9 @@ public final class CompositePresenter {
             List.copyOf(curveM));
     }
 
-    /** Fixed decimals, scientific notation when small but not zero, and exact zero below rounding noise. */
+    /**
+     * Fixed decimals, scientific notation when small but not zero, and exact zero below rounding noise.
+     */
     private static String probability(double p) {
         return TunnellingPresenter.probability(Math.abs(p) < NOISE ? 0.0 : p);
     }
