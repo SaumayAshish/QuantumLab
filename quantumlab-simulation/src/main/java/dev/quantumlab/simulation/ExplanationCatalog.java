@@ -96,6 +96,40 @@ public final class ExplanationCatalog {
                     + "decoherence, and no mechanism for collapse is modelled."));
     }
 
+    public static ModeExplanation tunnelling() {
+        return new ModeExplanation(
+            "Tunnelling — transmission through a barrier",
+            "A particle with energy E arrives at a potential barrier from the left. This screen "
+                + "computes the probability T that it is found on the far side, for one "
+                + "definite energy at a time, and plots T against E.",
+            "−½ ψ″(x) + V(x) ψ(x) = E ψ(x)   (ħ = m = 1), V = 0 outside the barrier.\n"
+                + "Inside a slab of constant V the pair (ψ, ψ') is carried across by a 2×2 "
+                + "matrix; the slab matrices are multiplied and T follows from the result.\n"
+                + "E < V0: κ = √(2(V0 − E)), T = 1 / (1 + V0² sinh²(κa) / (4E(V0 − E))).\n"
+                + "E > V0: k = √(2(E − V0)), T = 1 / (1 + V0² sin²(ka) / (4E(E − V0))).\n"
+                + "Thick barrier (κa ≫ 1): T ≈ 16E(V0 − E)/V0² · e^(−2κa).\n"
+                + "Reflection R = 1 − T.",
+            List.of(
+                "The long-time transmission probability of a wave of one definite energy "
+                    + "through one or two rectangular barriers.",
+                "Tunnelling: T is above zero for E < V0, where a classical particle is "
+                    + "always turned back.",
+                "Reflection above the barrier: T is below 1 for E > V0, where a classical "
+                    + "particle always gets over, and T reaches 1 only at isolated "
+                    + "energies.",
+                "Resonances: two barriers can transmit well at energies where one barrier "
+                    + "transmits poorly."),
+            List.of(
+                "Nothing moves: this is a stationary calculation, not a wave packet "
+                    + "travelling through the barrier, and no time of passage or speed "
+                    + "of tunnelling is shown.",
+                "No measurement or collapse is shown, and no individual particle is "
+                    + "followed: T is a probability.",
+                "An idealised model: sharp rectangular barriers in one dimension, "
+                    + "ħ = m = 1, no real material or device.",
+                "Probabilities below about 1e-300 are reported as 0."));
+    }
+
     public static ModeExplanation schrodinger1d() {
         return new ModeExplanation(
             "Quantum well — stationary states in one dimension",
@@ -154,13 +188,16 @@ public final class ExplanationCatalog {
                 "Projective measurement in three bases, with reproducible sampling.",
                 "The classical decay law and an idealised detector → trigger → cat chain.",
                 "Energy levels and stationary states of one particle in one dimension, by "
-                    + "finite differences."),
+                    + "finite differences.",
+                "Stationary transmission of a particle through rectangular barriers, by "
+                    + "transfer matrices."),
             List.of(
                 "QuantumLab does not simulate a macroscopic cat and does not solve the "
                     + "quantum measurement problem.",
                 "It makes no claims about consciousness or about the nature of reality.",
-                "The cat experiment and the one-dimensional solver are separate models: the "
-                    + "solver does not describe the cat or its nucleus.",
+                "The cat experiment, the one-dimensional solver and the tunnelling screen are "
+                    + "separate models: the solver and the tunnelling screen do not "
+                    + "describe the cat or its nucleus.",
                 "Entanglement of the nucleus with the apparatus (Mode D) and decoherence "
                     + "(Mode E) are planned but not implemented."));
     }

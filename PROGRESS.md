@@ -11,7 +11,7 @@ here is claimed as working unless it was run.
 | 1 | Mathematics: complex linear algebra, qubit, Born rule, measurement, decay model | Done |
 | 2 | First working cat laboratory with desktop UI (modes A, B, C) | Screens, README, ADRs and a CI definition done; the CI workflow has not run |
 | 3 | Finite-difference 1D Schrödinger solver | Done: solver, convergence study and two screens (Quantum well, Convergence) |
-| 4 | Barriers, tunnelling, composite systems, decoherence | Not started |
+| 4 | Barriers, tunnelling, composite systems, decoherence | In progress: stationary transmission through one or two barriers, with a Tunnelling screen; wave packets, composite systems and decoherence remain |
 | 5 | Desktop polish | Not started |
 | 6 | Optional Spring Boot service | Not started |
 | 7 | Release quality | Not started |
@@ -24,6 +24,7 @@ here is claimed as working unless it was run.
 - Result: BUILD SUCCESS, 345 tests (math 66, physics 109, simulation 95, desktop 75), no failures.
 - Quantum well and Convergence tabs exercised by hand: well and oscillator solves, a narrow
   oscillator box (error stops shrinking), invalid input.
+- Tunnelling tab exercised by hand: single and double barrier, probe energy, invalid input.
 
 
 ## Not yet verified

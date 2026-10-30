@@ -59,6 +59,6 @@ class SchrodingerExplanationTest {
         assertTrue(anyContains(no, "measurement problem"));
         assertTrue(anyContains(no, "consciousness"));
         assertTrue(anyContains(no, "planned but not implemented"));
-        assertTrue(anyContains(no, "solver does not describe the cat"));
+        assertTrue(anyContains(no, "do not describe the cat"));
     }
 }

@@ -44,7 +44,7 @@ class ScatteringTest {
     void reciprocity() {
         List<Layer> reversed = new ArrayList<>(STAIRS);
         Collections.reverse(reversed);
-        for (double e : new double[] {0.3, 0.8, 1.7, 2.9, 6.0}) {
+        for (double e : new double[]{0.3, 0.8, 1.7, 2.9, 6.0}) {
             assertEquals(
                 Scattering.transmission(STAIRS, e), Scattering.transmission(reversed, e), 1e-12);
         }
@@ -70,6 +70,16 @@ class ScatteringTest {
         double single = Scattering.transmission(List.of(new Layer(5.0, 0.5)), 2.0);
         assertTrue(best > 0.9, "peak " + best);
         assertTrue(single < 0.5, "single barrier at E=2: " + single);
+    }
+
+    @Test
+    @DisplayName("an extremely opaque barrier gives 0, not NaN, and a merely thick one a tiny positive T")
+    void veryOpaque() {
+        assertEquals(0.0, Scattering.transmission(List.of(new Layer(1000.0, 100.0)), 1.0), 0.0);
+        double thick = Scattering.transmission(List.of(new Layer(1000.0, 3.0)), 1.0);
+        assertTrue(thick > 1e-120 && thick < 1e-117, "T=" + thick);
+        assertEquals(
+            new RectangularBarrier(1000.0, 3.0).transmission(1.0), thick, 1e-12 * thick);
     }
 
     @Test

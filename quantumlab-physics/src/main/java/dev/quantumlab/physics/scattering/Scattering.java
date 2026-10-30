@@ -18,13 +18,15 @@ import java.util.List;
  */
 public final class Scattering {
 
-    private Scattering() {}
+    private Scattering() {
+    }
 
     /**
      * The transmission probability {@code T}, between 0 and 1.
      *
      * @param layers the slabs from left to right; may be empty, which transmits everything
      * @param energy the particle energy, positive and finite
+     * @return the probability; values too small to represent (below about 1e-300) are returned as 0
      */
     public static double transmission(List<Layer> layers, double energy) {
         if (layers == null) {
@@ -49,32 +51,41 @@ public final class Scattering {
             m21 = n21;
             m22 = n22;
         }
+        if (!Double.isFinite(m11 + m12 + m21 + m22)) {
+            // The stack is so opaque that the matrix overflowed; the true T is far below the
+            // smallest positive double, so it is reported as 0 rather than as NaN.
+            return 0.0;
+        }
         double k = Math.sqrt(2.0 * energy);
         double sum = m11 + m22;
         double diff = k * m12 - m21 / k;
         return 4.0 / (sum * sum + diff * diff);
     }
 
-    /** {@code 1 − T}: the probability of being reflected. */
+    /**
+     * {@code 1 − T}: the probability of being reflected.
+     */
     public static double reflection(List<Layer> layers, double energy) {
         return 1.0 - transmission(layers, energy);
     }
 
-    /** The matrix {@code [m11, m12, m21, m22]} of one slab. */
+    /**
+     * The matrix {@code [m11, m12, m21, m22]} of one slab.
+     */
     private static double[] slab(double potential, double width, double energy) {
         double e = energy - potential;
         if (e > 0.0) {
             double k = Math.sqrt(2.0 * e);
             double c = Math.cos(k * width);
             double s = Math.sin(k * width);
-            return new double[] {c, s / k, -k * s, c};
+            return new double[]{c, s / k, -k * s, c};
         }
         if (e < 0.0) {
             double kappa = Math.sqrt(-2.0 * e);
             double c = Math.cosh(kappa * width);
             double s = Math.sinh(kappa * width);
-            return new double[] {c, s / kappa, kappa * s, c};
+            return new double[]{c, s / kappa, kappa * s, c};
         }
-        return new double[] {1.0, width, 0.0, 1.0};
+        return new double[]{1.0, width, 0.0, 1.0};
     }
 }

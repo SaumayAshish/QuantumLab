@@ -36,6 +36,13 @@ numbers, and a log–log chart of the error with a slope-2 guide. For the infini
 oscillator in a wide box the order is 2. For an oscillator in a narrow box the fixed wall error
 dominates, the error stops shrinking, and the summary says so.
 
+**Tunnelling.** The probability T that a particle with energy E gets through one or two rectangular
+barriers, computed by transfer matrices and checked against the closed-form result and against an
+independent plane-wave calculation. The screen compares the quantum answer with the classical one
+(a classical particle is always reflected below the barrier and always passes above it), marks the
+barrier top, and for two barriers shows the resonances. Stationary only: no wave packet moves, and
+nothing is measured.
+
 **Across both screens.**
 
 - Seeded, reproducible random numbers: the same seed gives the same results, and "reset" replays
@@ -65,6 +72,7 @@ Not implemented yet:
 - Charts for the classical decay screen.
 - Desktop polish: layout, colours, a logarithmic axis for the convergence chart.
 - An optional Spring Boot service.
+- “a time-dependent wave packet hitting a barrier.”
 
 ## Scientific scope
 
