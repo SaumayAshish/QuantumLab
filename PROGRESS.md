@@ -10,7 +10,7 @@ here is claimed as working unless it was run.
 | 0 | Inspect the environment, plan | Done |
 | 1 | Mathematics: complex linear algebra, qubit, Born rule, measurement, decay model | Done |
 | 2 | First working cat laboratory with desktop UI (modes A, B, C) | Screens, README, ADRs and a CI definition done; the CI workflow has not run |
-| 3 | Finite-difference 1D Schrödinger solver | Not started |
+| 3 | Finite-difference 1D Schrödinger solver | In progress: solver, reference tests and presenter done; no screen yet |
 | 4 | Barriers, tunnelling, composite systems, decoherence | Not started |
 | 5 | Desktop polish | Not started |
 | 6 | Optional Spring Boot service | Not started |
