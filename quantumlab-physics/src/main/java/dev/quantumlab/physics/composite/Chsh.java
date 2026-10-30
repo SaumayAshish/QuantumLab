@@ -31,11 +31,22 @@ public final class Chsh {
 
     /** {@code cos θ · Z + sin θ · X}, a Hermitian matrix with eigenvalues ±1. */
     public static ComplexMatrix observable(double theta) {
-        if (!Double.isFinite(theta)) {
-            throw new IllegalArgumentException("The angle must be finite.");
+        return observable(theta, 0.0);
+    }
+
+    /**
+     * {@code cos θ · Z + sin θ · (cos φ · X + sin φ · Y)}: a spin measured along the direction with
+     * polar angle {@code θ} from the z axis and azimuth {@code φ}. Hermitian, eigenvalues ±1.
+     */
+    public static ComplexMatrix observable(double theta, double azimuth) {
+        if (!Double.isFinite(theta) || !Double.isFinite(azimuth)) {
+            throw new IllegalArgumentException("The angles must be finite.");
         }
+        double sx = Math.sin(theta) * Math.cos(azimuth);
+        double sy = Math.sin(theta) * Math.sin(azimuth);
         return QubitOperators.PAULI_Z.scale(Complex.of(Math.cos(theta)))
-            .plus(QubitOperators.PAULI_X.scale(Complex.of(Math.sin(theta))));
+            .plus(QubitOperators.PAULI_X.scale(Complex.of(sx)))
+            .plus(QubitOperators.PAULI_Y.scale(Complex.of(sy)));
     }
 
     /** {@code S} for the four settings {@code a, a′} (first qubit) and {@code b, b′} (second qubit). */
@@ -56,9 +67,22 @@ public final class Chsh {
         return new double[] {0.0, Math.PI / 2.0, t, -t};
     }
 
-    /** {@code 2√(1 + c²)}: the largest {@code S} reachable with settings in the x–z plane. */
+    /**
+     * {@code 2√(1 + c²)}: the largest {@code S} reachable with settings in the x–z plane when
+     * {@code ⟨X⊗X⟩ = c}. For a pure two-qubit state of concurrence {@code C} it is also the largest
+     * {@code S} over <em>all</em> settings, with {@code c = C}.
+     */
     public static double maximumInPlane(double c) {
         return 2.0 * Math.sqrt(1.0 + c * c);
+    }
+
+    /** {@code S} for four given observables, which may point in any directions. */
+    public static double value(
+        Correlator state, ComplexMatrix a, ComplexMatrix a2, ComplexMatrix b, ComplexMatrix b2) {
+        return state.correlation(a, b)
+            + state.correlation(a, b2)
+            + state.correlation(a2, b)
+            - state.correlation(a2, b2);
     }
 
     private static double e(Correlator state, double thetaFirst, double thetaSecond) {

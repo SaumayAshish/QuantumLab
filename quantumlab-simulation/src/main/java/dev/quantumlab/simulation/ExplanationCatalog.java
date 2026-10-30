@@ -207,6 +207,56 @@ public final class ExplanationCatalog {
     }
 
     /**
+     * Mode D: a nucleus and an idealised detector as one two-qubit state.
+     */
+    public static ModeExplanation composite() {
+        return new ModeExplanation(
+            "Composite system — a nucleus and a detector as one state",
+            "Two two-level systems, a nucleus and an idealised detector, are described by one "
+                + "joint state. This screen compares the entangled state α|00⟩ + β|11⟩ with "
+                + "the classical mixture that has the same chances of \"not decayed\" and "
+                + "\"decayed\", by their joint measurement statistics in chosen bases and by "
+                + "the CHSH quantity.",
+            "Joint state in C⁴ = C² ⊗ C²: |ψ⟩ = α|00⟩ + β|11⟩, α = √p0, β = √(1 − p0) e^{iφ}.\n"
+                + "Joint Born rule: P(i, j) = |⟨bᵢ ⊗ cⱼ | ψ⟩|² for the nucleus basis {bᵢ} and "
+                + "the detector basis {cⱼ}.\n"
+                + "Classical mixture: ρ = p0 |00⟩⟨00| + (1 − p0) |11⟩⟨11|, which has no "
+                + "amplitudes to interfere.\n"
+                + "Concurrence C = 2|a₀₀a₁₁ − a₀₁a₁₀|; entropy of either qubit alone "
+                + "−Σ λ log₂ λ with λ = (1 ± √(1 − C²))/2.\n"
+                + "CHSH: S = E(a,b) + E(a,b′) + E(a′,b) − E(a′,b′), with |S| ≤ 2 for any "
+                + "shared classical variable and |S| ≤ 2√2 for quantum states; for this "
+                + "state the largest S is 2√(1 + C²).",
+            List.of(
+                "How two two-level systems are described by one joint state, and how an "
+                    + "entangled state differs from a classical mixture that gives "
+                    + "identical statistics when both are measured in the computational "
+                    + "basis.",
+                "Exact joint Born-rule probabilities for projective measurements of both "
+                    + "systems in the Z, X or Y basis, and the fact that each system "
+                    + "on its own looks the same for the entangled state and the "
+                    + "mixture: the difference is in the correlations.",
+                "The concurrence and the entanglement entropy of the pure joint state, and "
+                    + "the CHSH value with its classical bound 2 and Tsirelson's bound "
+                    + "2√2."),
+            List.of(
+                "The detector is a two-level stand-in, not a model of a real detector: "
+                    + "it has no macroscopic degrees of freedom and no amplification.",
+                "Not the cat: no macroscopic cat is modelled and a cat is not treated as "
+                    + "a qubit. The state is written down, not produced by an "
+                    + "interaction.",
+                "No dynamics and no decoherence: nothing evolves in time on this screen "
+                    + "(decoherence is planned as Mode E).",
+                "The probabilities are exact, not sampled, and no single outcome or "
+                    + "collapse is shown. This does not solve the measurement problem "
+                    + "and favours no interpretation.",
+                "A CHSH value above 2 rules out outcomes fixed in advance by a shared "
+                    + "classical variable for these two qubits. It says nothing about "
+                    + "consciousness or about a cat, and no spatial separation or "
+                    + "signalling between the two systems is modelled."));
+    }
+
+    /**
      * Caveats that apply to the whole application.
      */
     public static ModeExplanation general() {
@@ -229,7 +279,10 @@ public final class ExplanationCatalog {
                 "Stationary transmission of a particle through rectangular barriers, by "
                     + "transfer matrices.",
                 "The motion in time of a Gaussian wave packet meeting a rectangular "
-                    + "barrier, by Crank–Nicolson stepping."),
+                    + "barrier, by Crank–Nicolson stepping.",
+                "Two qubits, a nucleus and an idealised detector, as an entangled state or "
+                    + "a classical mixture, compared by joint measurement statistics "
+                    + "and the CHSH quantity."),
             List.of(
                 "QuantumLab does not simulate a macroscopic cat and does not solve the "
                     + "quantum measurement problem.",
@@ -239,7 +292,9 @@ public final class ExplanationCatalog {
                     + "describe the cat or its nucleus.",
                 "The wave-packet screen is likewise a separate model and does not describe "
                     + "the cat or its nucleus.",
-                "Entanglement of the nucleus with the apparatus (Mode D) and decoherence "
-                    + "(Mode E) are planned but not implemented."));
+                "The composite-system screen is a separate two-qubit model: its detector "
+                    + "is a two-level stand-in and it does not describe the cat or a "
+                    + "real apparatus.",
+                "Decoherence (Mode E) is planned but not implemented."));
     }
 }

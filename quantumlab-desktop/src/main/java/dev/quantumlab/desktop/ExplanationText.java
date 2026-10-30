@@ -40,6 +40,13 @@ public final class ExplanationText {
     }
 
     /**
+     * The explanations relevant to the composite-system screen, scope last.
+     */
+    public static List<ModeExplanation> forCompositeScreen() {
+        return List.of(ExplanationCatalog.composite(), ExplanationCatalog.general());
+    }
+
+    /**
      * The explanations relevant to the classical decay screen, most specific first, scope last.
      */
     public static List<ModeExplanation> forClassicalScreen() {

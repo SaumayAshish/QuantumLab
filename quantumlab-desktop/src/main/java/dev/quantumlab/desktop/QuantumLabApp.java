@@ -16,6 +16,7 @@ public final class QuantumLabApp extends Application {
     private ConvergenceView convergence;
     private TunnellingView tunnelling;
     private WavePacketView wavePacket;
+    private CompositeView composite;
 
     @Override
     public void start(Stage stage) {
@@ -25,6 +26,7 @@ public final class QuantumLabApp extends Application {
         convergence = new ConvergenceView();
         tunnelling = new TunnellingView();
         wavePacket = new WavePacketView();
+        composite = new CompositeView();
 
         Tab modeA = new Tab("A · Classical decay", classical.root());
         modeA.setClosable(false);
@@ -38,9 +40,11 @@ public final class QuantumLabApp extends Application {
         tunnel.setClosable(false);
         Tab packet = new Tab("Wave packet", wavePacket.root());
         packet.setClosable(false);
+        Tab modeD = new Tab("D · Composite system", composite.root());
+        modeD.setClosable(false);
 
         stage.setTitle(QuantumLabInfo.NAME + " " + QuantumLabInfo.VERSION);
-        stage.setScene(new Scene(new TabPane(modeA, modeBC, well, conv, tunnel, packet), 1100, 760));
+        stage.setScene(new Scene(new TabPane(modeA, modeBC, well, conv, tunnel, packet, modeD), 1100, 760));
         stage.show();
     }
 
@@ -63,6 +67,9 @@ public final class QuantumLabApp extends Application {
         }
         if (wavePacket != null) {
             wavePacket.shutdown();
+        }
+        if (composite != null) {
+            composite.shutdown();
         }
     }
 

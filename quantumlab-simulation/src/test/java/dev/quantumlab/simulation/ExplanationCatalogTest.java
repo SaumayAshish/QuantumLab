@@ -22,6 +22,7 @@ class ExplanationCatalogTest {
             ExplanationCatalog.schrodinger1d(),
             ExplanationCatalog.tunnelling(),
             ExplanationCatalog.wavePacket(),
+            ExplanationCatalog.composite(),
             ExplanationCatalog.general());
     }
 
