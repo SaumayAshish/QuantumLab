@@ -11,7 +11,7 @@ here is claimed as working unless it was run.
 | 1 | Mathematics: complex linear algebra, qubit, Born rule, measurement, decay model | Done |
 | 2 | First working cat laboratory with desktop UI (modes A, B, C) | Screens, README, ADRs and a CI definition done; the CI workflow has not run |
 | 3 | Finite-difference 1D Schrödinger solver | Done: solver, convergence study and two screens (Quantum well, Convergence) |
-| 4 | Barriers, tunnelling, wave packet, composite systems, decoherence | In progress. Done: stationary tunnelling through one or two barriers (Tunnelling screen), time-dependent wave packet (Crank–Nicolson), two-qubit composite system with CHSH (Composite system screen). Remaining: decoherence (mode E) |
+| 4 | Barriers, tunnelling, wave packet, composite systems, decoherence | Done: stationary tunnelling through one or two barriers (Tunnelling screen), time-dependent wave packet (Crank–Nicolson), two-qubit composite system with CHSH (Composite system screen), and dephasing of a single qubit (Decoherence screen) |
 | 5 | Desktop polish | Not started |
 | 6 | Optional Spring Boot service | Not started |
 | 7 | Release quality | Not started |
@@ -21,12 +21,15 @@ here is claimed as working unless it was run.
 - Date: 2026-10-30.
 - Command: `mvn test` from the repository root.
 - Environment: Windows, Microsoft OpenJDK 25.0.5, Maven 3.9.16, JavaFX 25.0.1.
-- Result: BUILD SUCCESS, 464 tests (math 71, physics 171, simulation 104, desktop 118), no failures.
-- The application starts with seven tabs.
+- Result: BUILD SUCCESS, 510 tests (math 71, physics 193, simulation 107, desktop 139), no failures.
+- The application starts with eight tabs.
+- Decoherence tab exercised by hand: defaults in the X basis, the Z basis (statistics unchanged),
+  strong dephasing (γ = 10, t = 1), and an invalid rate (−1).
 - Composite system tab exercised by hand: default Z/Z, X/X, Y/Y, a rounded phase of 1.5708, an
   unequal split (P = 0.8), P = 1 (not entangled) and invalid input (P = 1.5).
 - Earlier hand checks: Quantum well, Convergence and Tunnelling tabs (single and double barrier,
   probe energy, narrow oscillator box, invalid input).
+
 
 ## Not yet verified
 
@@ -47,8 +50,6 @@ here is claimed as working unless it was run.
 - The convergence chart uses a linear trial axis, so early trials are compressed; a logarithmic
   axis is planned.
 - "Observed" and "Theory" bar colours in the measurement chart are too similar.
-- On the Composite system tab the two chart curves are similar in colour, and identical curves
-  hide each other.
 - The convergence chart title is truncated at the default window width.
 - The classical screen has no charts yet.
 - The views duplicate their worker-thread plumbing; it should be extracted.
@@ -56,5 +57,7 @@ here is claimed as working unless it was run.
 - The interference curve exists in the simulation module but has no screen.
 - Switching the potential changes the input fields but not the table until Solve is pressed.
 - The grid-point error message says "use a decimal point, e.g. 0.5", which is wrong for whole numbers.
-- The Convergence tables show empty rows below the data because the table height is fixed.
+- The Convergence, Composite and Decoherence results tables show empty rows below the data because
+  the table height is fixed.
+- The y-axis label of the Decoherence fringe chart is truncated. 
 - The Tunnelling table layout may need the same fix; this has not been confirmed.

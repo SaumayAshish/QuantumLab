@@ -96,6 +96,7 @@ public final class CompositeView {
         chart.setCreateSymbols(false);
         chart.setPrefHeight(320);
         chart.setMinHeight(240);
+        chart.setStyle("CHART_COLOR_1: #1f6fb4; CHART_COLOR_2: #e8590c;");
 
         configureBasisBox(nucleusBasis);
         configureBasisBox(detectorBasis);
