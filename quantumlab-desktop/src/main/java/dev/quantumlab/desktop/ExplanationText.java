@@ -24,9 +24,19 @@ public final class ExplanationText {
     public static List<ModeExplanation> forSchrodingerScreen() {
         return List.of(ExplanationCatalog.schrodinger1d(), ExplanationCatalog.general());
     }
-    /** The explanations relevant to the tunnelling screen, scope last. */
+
+    /**
+     * The explanations relevant to the tunnelling screen, scope last.
+     */
     public static List<ModeExplanation> forTunnellingScreen() {
         return List.of(ExplanationCatalog.tunnelling(), ExplanationCatalog.general());
+    }
+
+    /**
+     * The explanations relevant to the wave-packet screen, scope last.
+     */
+    public static List<ModeExplanation> forWavePacketScreen() {
+        return List.of(ExplanationCatalog.wavePacket(), ExplanationCatalog.general());
     }
 
     /**

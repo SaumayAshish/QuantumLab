@@ -16,12 +16,13 @@ class ExplanationCatalogTest {
 
     private static List<ModeExplanation> all() {
         return List.of(
-                ExplanationCatalog.classical(),
-                ExplanationCatalog.superposition(),
-                ExplanationCatalog.measurement(),
-                ExplanationCatalog.schrodinger1d(),
-                ExplanationCatalog.tunnelling(),
-                ExplanationCatalog.general());
+            ExplanationCatalog.classical(),
+            ExplanationCatalog.superposition(),
+            ExplanationCatalog.measurement(),
+            ExplanationCatalog.schrodinger1d(),
+            ExplanationCatalog.tunnelling(),
+            ExplanationCatalog.wavePacket(),
+            ExplanationCatalog.general());
     }
 
     private static boolean anyContains(List<String> lines, String fragment) {
@@ -55,7 +56,7 @@ class ExplanationCatalogTest {
         assertTrue(anyContains(no, "modelling convenience"));
         assertTrue(anyContains(no, "consciousness"));
         assertTrue(
-                anyContains(ExplanationCatalog.superposition().represents(), "classical mixture"));
+            anyContains(ExplanationCatalog.superposition().represents(), "classical mixture"));
     }
 
     @Test
@@ -81,7 +82,7 @@ class ExplanationCatalogTest {
     @DisplayName("the explanation lists are immutable")
     void immutable() {
         org.junit.jupiter.api.Assertions.assertThrows(
-                UnsupportedOperationException.class,
-                () -> ExplanationCatalog.general().doesNotRepresent().clear());
+            UnsupportedOperationException.class,
+            () -> ExplanationCatalog.general().doesNotRepresent().clear());
     }
 }

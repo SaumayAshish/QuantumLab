@@ -166,9 +166,46 @@ public final class ExplanationCatalog {
                     + "system, and not the nucleus or the cat of the other modes."));
     }
 
-    /**
-     * Caveats that apply to the whole application.
-     */
+    public static ModeExplanation wavePacket() {
+        return new ModeExplanation(
+            "Wave packet — a particle meeting a barrier in time",
+            "A single particle in one dimension starts as a Gaussian wave packet to the left of a "
+                + "rectangular barrier and moves towards it. This screen steps the "
+                + "time-dependent Schrödinger equation forward and shows the probability "
+                + "density splitting into a reflected part and a transmitted part, then "
+                + "compares the final split with the stationary transmission T(E) averaged "
+                + "over the packet's energies.",
+            "i ∂ψ/∂t = −½ ψ″ + V(x) ψ   (ħ = m = 1), with ψ = 0 at walls at x = ±80.\n"
+                + "Initial packet: ψ ∝ exp(−(x − x0)² / 4σ²) · e^{i k0 x}, so |ψ|² has "
+                + "standard deviation σ and the mean momentum is k0.\n"
+                + "Crank–Nicolson step: (1 + i·dt/2·H) ψ(t+dt) = (1 − i·dt/2·H) ψ(t). Each "
+                + "step conserves Σ|ψ|²h to rounding, for any dt.\n"
+                + "Prediction for the late-time probability beyond the barrier: "
+                + "∫ |φ(k)|² T(k²/2) dk with |φ(k)|² ∝ exp(−2σ²(k − k0)²).",
+            List.of(
+                "How the probability density of one particle evolves in time under the "
+                    + "Schrödinger equation, including the split into a reflected and a "
+                    + "transmitted part.",
+                "Conservation checks: the total probability stays 1 and the mean energy is "
+                    + "conserved by the numerical scheme.",
+                "Agreement with stationary theory: the probability beyond the barrier at "
+                    + "late time matches T(E) averaged over the packet's spread of "
+                    + "energies, not T at the mean energy alone."),
+            List.of(
+                "A numerical solution on a grid (spacing 0.1) with hard walls at ±80: "
+                    + "results depend on the grid, and the barrier width is rounded to "
+                    + "a whole number of cells.",
+                "No measurement or collapse is shown: the animation is the density |ψ|², "
+                    + "and a measurement would find the particle on one side, with "
+                    + "these probabilities.",
+                "The packet is not a classical particle splitting in two: no trajectory of "
+                    + "an individual particle is followed, and no passage time or speed "
+                    + "of tunnelling is defined or shown.",
+                "An idealised model: a sharp rectangular barrier in one dimension, "
+                    + "ħ = m = 1, not a specific material or device, and not the cat "
+                    + "or its nucleus."));
+    }
+
     /**
      * Caveats that apply to the whole application.
      */
@@ -190,7 +227,9 @@ public final class ExplanationCatalog {
                 "Energy levels and stationary states of one particle in one dimension, by "
                     + "finite differences.",
                 "Stationary transmission of a particle through rectangular barriers, by "
-                    + "transfer matrices."),
+                    + "transfer matrices.",
+                "The motion in time of a Gaussian wave packet meeting a rectangular "
+                    + "barrier, by Crank–Nicolson stepping."),
             List.of(
                 "QuantumLab does not simulate a macroscopic cat and does not solve the "
                     + "quantum measurement problem.",
@@ -198,6 +237,8 @@ public final class ExplanationCatalog {
                 "The cat experiment, the one-dimensional solver and the tunnelling screen are "
                     + "separate models: the solver and the tunnelling screen do not "
                     + "describe the cat or its nucleus.",
+                "The wave-packet screen is likewise a separate model and does not describe "
+                    + "the cat or its nucleus.",
                 "Entanglement of the nucleus with the apparatus (Mode D) and decoherence "
                     + "(Mode E) are planned but not implemented."));
     }

@@ -15,6 +15,7 @@ public final class QuantumLabApp extends Application {
     private SchrodingerView schrodinger;
     private ConvergenceView convergence;
     private TunnellingView tunnelling;
+    private WavePacketView wavePacket;
 
     @Override
     public void start(Stage stage) {
@@ -23,6 +24,7 @@ public final class QuantumLabApp extends Application {
         schrodinger = new SchrodingerView();
         convergence = new ConvergenceView();
         tunnelling = new TunnellingView();
+        wavePacket = new WavePacketView();
 
         Tab modeA = new Tab("A · Classical decay", classical.root());
         modeA.setClosable(false);
@@ -34,9 +36,11 @@ public final class QuantumLabApp extends Application {
         conv.setClosable(false);
         Tab tunnel = new Tab("Tunnelling", tunnelling.root());
         tunnel.setClosable(false);
+        Tab packet = new Tab("Wave packet", wavePacket.root());
+        packet.setClosable(false);
 
         stage.setTitle(QuantumLabInfo.NAME + " " + QuantumLabInfo.VERSION);
-        stage.setScene(new Scene(new TabPane(modeA, modeBC, well, conv, tunnel), 1100, 760));
+        stage.setScene(new Scene(new TabPane(modeA, modeBC, well, conv, tunnel, packet), 1100, 760));
         stage.show();
     }
 
@@ -56,6 +60,9 @@ public final class QuantumLabApp extends Application {
         }
         if (tunnelling != null) {
             tunnelling.shutdown();
+        }
+        if (wavePacket != null) {
+            wavePacket.shutdown();
         }
     }
 
