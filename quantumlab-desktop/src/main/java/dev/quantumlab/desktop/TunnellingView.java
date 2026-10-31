@@ -204,8 +204,7 @@ public final class TunnellingView {
         table.getColumns().add(column("Reflected R", 100, TunnellingPresenter.RowView::reflection));
         table.getColumns().add(column("Closed form T", 110, TunnellingPresenter.RowView::closedForm));
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
-        table.setPrefHeight(240);
-        table.setMinHeight(200);
+        Tables.fitToRows(table);
 
         VBox box =
             new VBox(

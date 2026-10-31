@@ -79,7 +79,9 @@ public final class SchrodingerView {
     private final LineChart<Number, Number> amplitudeChart;
     private final LineChart<Number, Number> densityChart;
 
-    /** True while the table is being filled, so that selecting row 0 does not trigger a reload. */
+    /**
+     * True while the table is being filled, so that selecting row 0 does not trigger a reload.
+     */
     private boolean populating;
 
     public SchrodingerView() {
@@ -127,7 +129,9 @@ public final class SchrodingerView {
         return root;
     }
 
-    /** Stops the worker thread. Call when the window closes. */
+    /**
+     * Stops the worker thread. Call when the window closes.
+     */
     public void shutdown() {
         worker.shutdownNow();
     }
@@ -135,7 +139,7 @@ public final class SchrodingerView {
     // ---------------------------------------------------------------- layout
 
     private Node buildInputPane() {
-        for (TextField f : new TextField[] {xMin, xMax, gridPoints, omega, levels}) {
+        for (TextField f : new TextField[]{xMin, xMax, gridPoints, omega, levels}) {
             f.setPrefColumnCount(10);
         }
         potential.setMaxWidth(Double.MAX_VALUE);
@@ -184,8 +188,7 @@ public final class SchrodingerView {
         table.getColumns().add(column("Error", 110, SchrodingerPresenter.LevelRow::error));
         table.getColumns()
             .add(column("Relative error", 120, SchrodingerPresenter.LevelRow::relativeError));
-        table.setPrefHeight(180);
-        table.setMinHeight(130);
+        Tables.fitToRows(table);
         table.setPlaceholder(new Label("No data"));
 
         HBox charts = new HBox(10, amplitudeChart, densityChart);
@@ -291,7 +294,9 @@ public final class SchrodingerView {
 
     // ---------------------------------------------------------------- display
 
-    /** Typical settings for each potential; the user can change them afterwards. */
+    /**
+     * Typical settings for each potential; the user can change them afterwards.
+     */
     private void applyDefaults(SchrodingerPresenter.PotentialKind kind) {
         boolean well = kind == SchrodingerPresenter.PotentialKind.INFINITE_WELL;
         xMin.setText(well ? "0" : "-10");

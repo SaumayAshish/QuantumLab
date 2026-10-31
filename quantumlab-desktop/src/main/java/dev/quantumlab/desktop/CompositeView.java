@@ -197,8 +197,7 @@ public final class CompositeView {
         table.getColumns().add(column("Mixture", 110, CompositePresenter.RowView::mixture));
         table.getColumns()
             .add(column("Entangled − mixture", 150, CompositePresenter.RowView::difference));
-        table.setPrefHeight(190);
-        table.setMinHeight(150);
+        Tables.fitToRows(table);
 
         GridPane agree = new GridPane();
         agree.setHgap(8);

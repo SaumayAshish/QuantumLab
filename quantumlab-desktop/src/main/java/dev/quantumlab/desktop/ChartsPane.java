@@ -1,3 +1,4 @@
+
 package dev.quantumlab.desktop;
 
 import dev.quantumlab.simulation.SeriesPoint;
@@ -14,12 +15,17 @@ import javafx.util.StringConverter;
 /**
  * Two charts: observed versus theoretical probability per outcome, and the running frequency of
  * the first outcome converging on its theoretical value as trials accumulate.
- *
+ * on a logarithmic trial axis so that the early trials, where the frequency moves most, are not
+ * squeezed into the left edge.
  * <p>Must be used on the JavaFX thread only.
  */
 final class ChartsPane {
 
+    private static final String SERIES_COLOURS =
+        "CHART_COLOR_1: #1f6fb4; CHART_COLOR_2: #e8590c;";
+
     private final BarChart<String, Number> bars;
+    private final NumberAxis trialsAxis = new NumberAxis(0.0, 1.0, 1.0);
     private final LineChart<Number, Number> convergence;
     private final HBox box;
 
@@ -28,19 +34,33 @@ final class ChartsPane {
         bars.setTitle("Observed vs theory");
         bars.setAnimated(false);
 
-        NumberAxis trialsAxis = new NumberAxis();
-        trialsAxis.setLabel("Trials");
-        trialsAxis.setForceZeroInRange(false);
+        trialsAxis.setLabel("Trials (log scale)");
+        trialsAxis.setAutoRanging(false);
+        trialsAxis.setMinorTickVisible(false);
+        trialsAxis.setTickLabelFormatter(
+            new StringConverter<Number>() {
+                @Override
+                public String toString(Number n) {
+                    return LogAxis.label(n.doubleValue());
+                }
+
+                @Override
+                public Number fromString(String s) {
+                    return null; // axis labels are never parsed
+                }
+            });
         convergence = new LineChart<>(trialsAxis, percentAxis());
-        convergence.setTitle("Convergence of the running frequency");
+        convergence.setTitle("Running frequency");
         convergence.setAnimated(false);
         convergence.setCreateSymbols(false);
 
-        for (XYChart<?, ?> chart : new XYChart<?, ?>[] {bars, convergence}) {
+        for (XYChart<?, ?> chart : new XYChart<?, ?>[]{bars, convergence}) {
             chart.setPrefHeight(240);
             chart.setMinHeight(200);
+            chart.setStyle(SERIES_COLOURS);
             HBox.setHgrow(chart, Priority.ALWAYS);
         }
+
         box = new HBox(10, bars, convergence);
     }
 
@@ -51,29 +71,46 @@ final class ChartsPane {
     void show(ChartData d) {
         XYChart.Series<String, Number> observed = new XYChart.Series<>();
         observed.setName("Observed");
+
         XYChart.Series<String, Number> theory = new XYChart.Series<>();
         theory.setName("Theory");
+
         for (int k = 0; k < d.labels().size(); k++) {
-            observed.getData().add(new XYChart.Data<>(d.labels().get(k), d.observed().get(k)));
-            theory.getData().add(new XYChart.Data<>(d.labels().get(k), d.theoretical().get(k)));
+            observed.getData().add(
+                new XYChart.Data<>(d.labels().get(k), d.observed().get(k)));
+            theory.getData().add(
+                new XYChart.Data<>(d.labels().get(k), d.theoretical().get(k)));
         }
+
         bars.getData().clear();
         bars.getData().add(observed);
         bars.getData().add(theory);
 
         convergence.getData().clear();
+
         if (!d.convergence().isEmpty()) {
             XYChart.Series<Number, Number> running = new XYChart.Series<>();
             running.setName("Observed frequency of " + d.convergenceLabel());
+
             for (SeriesPoint p : d.convergence()) {
-                running.getData().add(new XYChart.Data<>(p.x(), p.y()));
+                running.getData().add(
+                    new XYChart.Data<>(LogAxis.position(p.x()), p.y()));
             }
+
             double first = d.convergence().get(0).x();
             double last = d.convergence().get(d.convergence().size() - 1).x();
+
+            double[] limits = LogAxis.bounds(first, last);
+            trialsAxis.setLowerBound(limits[0]);
+            trialsAxis.setUpperBound(limits[1]);
+
             XYChart.Series<Number, Number> expected = new XYChart.Series<>();
             expected.setName("Theory");
-            expected.getData().add(new XYChart.Data<>(first, d.convergenceTheory()));
-            expected.getData().add(new XYChart.Data<>(last, d.convergenceTheory()));
+            expected.getData().add(
+                new XYChart.Data<>(LogAxis.position(first), d.convergenceTheory()));
+            expected.getData().add(
+                new XYChart.Data<>(LogAxis.position(last), d.convergenceTheory()));
+
             convergence.getData().add(running);
             convergence.getData().add(expected);
         }
@@ -83,17 +120,17 @@ final class ChartsPane {
         NumberAxis axis = new NumberAxis(0.0, 1.0, 0.25);
         axis.setAutoRanging(false);
         axis.setTickLabelFormatter(
-                new StringConverter<Number>() {
-                    @Override
-                    public String toString(Number n) {
-                        return Math.round(n.doubleValue() * 100.0) + " %";
-                    }
+            new StringConverter<Number>() {
+                @Override
+                public String toString(Number n) {
+                    return Math.round(n.doubleValue() * 100.0) + " %";
+                }
 
-                    @Override
-                    public Number fromString(String s) {
-                        return null; // axis labels are never parsed
-                    }
-                });
+                @Override
+                public Number fromString(String s) {
+                    return null; // axis labels are never parsed
+                }
+            });
         return axis;
     }
 }

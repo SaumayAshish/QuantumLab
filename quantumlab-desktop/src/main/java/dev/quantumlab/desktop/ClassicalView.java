@@ -162,8 +162,7 @@ public final class ClassicalView {
         table.getColumns().add(column("Theory", 100, ResultsView.Row::theoretical));
         table.getColumns().add(column("Std. error", 100, ResultsView.Row::standardError));
         table.getColumns().add(column("Deviation", 100, ResultsView.Row::sigma));
-        table.setPrefHeight(130);
-        table.setMinHeight(130);
+        Tables.fitToRows(table);
         table.setPlaceholder(new Label("No data"));
 
         drawOut.setWrapText(true);

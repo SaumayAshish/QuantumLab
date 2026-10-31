@@ -1,3 +1,4 @@
+
 package dev.quantumlab.desktop;
 
 import dev.quantumlab.simulation.SeriesPoint;
@@ -104,7 +105,7 @@ public final class DecoherenceView {
 
         angleAxis.setLabel("Analyser angle φ, degrees");
         angleAxis.setAutoRanging(false);
-        probabilityAxis.setLabel("Probability of (|0⟩ + e^{iφ}|1⟩)/√2");
+        probabilityAxis.setLabel("Probability");
         probabilityAxis.setAutoRanging(false);
         fringeChart = new LineChart<>(angleAxis, probabilityAxis);
         fringeChart.setTitle("Interference fringe");
@@ -219,8 +220,7 @@ public final class DecoherenceView {
         table.getColumns().add(column("At t = 0", 120, DecoherencePresenter.RowView::initial));
         table.getColumns().add(column("At time t", 120, DecoherencePresenter.RowView::now));
         table.getColumns().add(column("Long-time limit", 140, DecoherencePresenter.RowView::limit));
-        table.setPrefHeight(130);
-        table.setMinHeight(110);
+        Tables.fitToRows(table);
 
         VBox box =
             new VBox(
@@ -231,6 +231,7 @@ public final class DecoherenceView {
                 zChancesOut,
                 timeChart,
                 fringeChart,
+                fringeCaption(),
                 new ExplanationPane(ExplanationText.forDecoherenceScreen()).node());
         box.setPadding(new Insets(16));
 
@@ -371,5 +372,13 @@ public final class DecoherenceView {
         c.setPrefWidth(width);
         c.setSortable(false);
         return c;
+    }
+
+    private static Label fringeCaption() {
+        Label caption =
+            new Label(
+                "Probability of the outcome (|0⟩ + e^{iφ}|1⟩)/√2 against the analyser angle φ.");
+        caption.setWrapText(true);
+        return caption;
     }
 }

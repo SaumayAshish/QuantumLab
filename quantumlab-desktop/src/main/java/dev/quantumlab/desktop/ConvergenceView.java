@@ -84,6 +84,7 @@ public final class ConvergenceView {
         chart.setAnimated(false);
         chart.setPrefHeight(320);
         chart.setMinHeight(240);
+        chart.setStyle("CHART_COLOR_1: #1f6fb4; CHART_COLOR_2: #e8590c;");
 
         potential.getItems().setAll(SchrodingerPresenter.PotentialKind.values());
         potential.setConverter(
@@ -172,8 +173,7 @@ public final class ConvergenceView {
         table.getColumns().add(column("Numerical E", 120, ConvergencePresenter.RowView::numerical));
         table.getColumns().add(column("Error", 110, ConvergencePresenter.RowView::error));
         table.getColumns().add(column("Observed order", 120, ConvergencePresenter.RowView::order));
-        table.setPrefHeight(200);
-        table.setMinHeight(150);
+        Tables.fitToRows(table);
         table.setPlaceholder(new Label("No data"));
 
         VBox box =

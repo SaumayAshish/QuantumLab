@@ -52,30 +52,30 @@ public final class MeasurementView {
     private static final int CHART_POINTS = 300;
     private static final String DEFAULT_SEED = "12345";
     private static final String SCOPE_NOTE =
-            "Each trial prepares a fresh copy of the state and measures it once, sampling the Born"
-                    + " rule. This models measurement statistics; it does not explain the"
-                    + " measurement problem, and consciousness plays no role.";
+        "Each trial prepares a fresh copy of the state and measures it once, sampling the Born"
+            + " rule. This models measurement statistics; it does not explain the"
+            + " measurement problem, and consciousness plays no role.";
 
     private record Preset(String label, QubitState state) {
     }
 
     private static final List<Preset> PRESETS =
-            List.of(
-                    new Preset("|0⟩", QubitState.basis0()),
-                    new Preset("|1⟩", QubitState.basis1()),
-                    new Preset("|+⟩", QubitState.plus()),
-                    new Preset("|−⟩", QubitState.minus()),
-                    new Preset("|+i⟩", QubitState.plusI()),
-                    new Preset("|−i⟩", QubitState.minusI()));
+        List.of(
+            new Preset("|0⟩", QubitState.basis0()),
+            new Preset("|1⟩", QubitState.basis1()),
+            new Preset("|+⟩", QubitState.plus()),
+            new Preset("|−⟩", QubitState.minus()),
+            new Preset("|+i⟩", QubitState.plusI()),
+            new Preset("|−i⟩", QubitState.minusI()));
 
     private final LabPresenter presenter = new LabPresenter();
     private final ExecutorService worker =
-            Executors.newSingleThreadExecutor(
-                    task -> {
-                        Thread t = new Thread(task, "quantumlab-worker");
-                        t.setDaemon(true);
-                        return t;
-                    });
+        Executors.newSingleThreadExecutor(
+            task -> {
+                Thread t = new Thread(task, "quantumlab-worker");
+                t.setDaemon(true);
+                return t;
+            });
 
     private final BorderPane root = new BorderPane();
     private final List<Button> controls = new ArrayList<>();
@@ -133,24 +133,24 @@ public final class MeasurementView {
     private void configureBasisChooser() {
         basis.getItems().setAll(StandardBasis.values());
         basis.setConverter(
-                new StringConverter<>() {
-                    @Override
-                    public String toString(StandardBasis b) {
-                        if (b == null) {
-                            return "";
-                        }
-                        return switch (b) {
-                            case COMPUTATIONAL -> "Z: computational {|0⟩, |1⟩}";
-                            case HADAMARD -> "X: Hadamard {|+⟩, |−⟩}";
-                            case CIRCULAR -> "Y: circular {|+i⟩, |−i⟩}";
-                        };
+            new StringConverter<>() {
+                @Override
+                public String toString(StandardBasis b) {
+                    if (b == null) {
+                        return "";
                     }
+                    return switch (b) {
+                        case COMPUTATIONAL -> "Z: computational {|0⟩, |1⟩}";
+                        case HADAMARD -> "X: Hadamard {|+⟩, |−⟩}";
+                        case CIRCULAR -> "Y: circular {|+i⟩, |−i⟩}";
+                    };
+                }
 
-                    @Override
-                    public StandardBasis fromString(String s) {
-                        return null; // the chooser is not editable
-                    }
-                });
+                @Override
+                public StandardBasis fromString(String s) {
+                    return null; // the chooser is not editable
+                }
+            });
     }
 
     private Node buildInputPane() {
@@ -184,27 +184,27 @@ public final class MeasurementView {
 
         trials.setPrefColumnCount(8);
         HBox run =
-                new HBox(
-                        8,
-                        new Label("Trials"),
-                        trials,
-                        button("Measure", this::onMeasure),
-                        button("Reset trials", this::onReset));
+            new HBox(
+                8,
+                new Label("Trials"),
+                trials,
+                button("Measure", this::onMeasure),
+                button("Reset trials", this::onReset));
         run.setAlignment(Pos.CENTER_LEFT);
 
         VBox box =
-                new VBox(
-                        10,
-                        heading("Prepare a state"),
-                        presets,
-                        form,
-                        prepare,
-                        heading("Prepared state"),
-                        out,
-                        noteOut,
-                        heading("Run"),
-                        run,
-                        button("Export JSON…", this::onExport));
+            new VBox(
+                10,
+                heading("Prepare a state"),
+                presets,
+                form,
+                prepare,
+                heading("Prepared state"),
+                out,
+                noteOut,
+                heading("Run"),
+                run,
+                button("Export JSON…", this::onExport));
         box.setPadding(new Insets(16));
         box.setPrefWidth(480);
         return box;
@@ -217,7 +217,7 @@ public final class MeasurementView {
         table.getColumns().add(column("Theory", 100, ResultsView.Row::theoretical));
         table.getColumns().add(column("Std. error", 100, ResultsView.Row::standardError));
         table.getColumns().add(column("Deviation", 100, ResultsView.Row::sigma));
-        table.setPrefHeight(130);
+        Tables.fitToRows(table);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         table.setPlaceholder(new Label("No data"));
 
@@ -225,16 +225,16 @@ public final class MeasurementView {
         VBox.setVgrow(history, Priority.ALWAYS);
 
         VBox box =
-                new VBox(
-                        10,
-                        heading("Repeated trials"),
-                        trialsOut,
-                        table,
-                        verdictOut,
-                        charts.node(),
-                        heading("History (latest trials, newest last)"),
-                        history,
-                        about.node());
+            new VBox(
+                10,
+                heading("Repeated trials"),
+                trialsOut,
+                table,
+                verdictOut,
+                charts.node(),
+                heading("History (latest trials, newest last)"),
+                history,
+                about.node());
         box.setPadding(new Insets(16));
         return box;
     }
@@ -251,51 +251,51 @@ public final class MeasurementView {
 
     private void onPrepare() {
         LabPresenter.Request request =
-                new LabPresenter.Request(
-                        alphaRe.getText(),
-                        alphaIm.getText(),
-                        betaRe.getText(),
-                        betaIm.getText(),
-                        basis.getValue(),
-                        seed.getText());
+            new LabPresenter.Request(
+                alphaRe.getText(),
+                alphaIm.getText(),
+                betaRe.getText(),
+                betaIm.getText(),
+                basis.getValue(),
+                seed.getText());
         run(
-                () -> {
-                    StateView state = presenter.prepare(request);
-                    ResultsView results = presenter.results();
-                    List<String> lines = presenter.history(HISTORY_LINES);
-                    ChartData chart = presenter.chartData(CHART_POINTS);
-                    return () -> {
-                        showState(state);
-                        showResults(results, lines, chart);
-                        setStatus("State prepared. Seed " + request.seed().trim() + ".", false);
-                    };
-                });
+            () -> {
+                StateView state = presenter.prepare(request);
+                ResultsView results = presenter.results();
+                List<String> lines = presenter.history(HISTORY_LINES);
+                ChartData chart = presenter.chartData(CHART_POINTS);
+                return () -> {
+                    showState(state);
+                    showResults(results, lines, chart);
+                    setStatus("State prepared. Seed " + request.seed().trim() + ".", false);
+                };
+            });
     }
 
     private void onMeasure() {
         String count = trials.getText();
         run(
-                () -> {
-                    ResultsView results = presenter.measure(count);
-                    List<String> lines = presenter.history(HISTORY_LINES);
-                    ChartData chart = presenter.chartData(CHART_POINTS);
-                    return () -> {
-                        showResults(results, lines, chart);
-                        setStatus("Ran trials; " + results.trials() + " in total.", false);
-                    };
-                });
+            () -> {
+                ResultsView results = presenter.measure(count);
+                List<String> lines = presenter.history(HISTORY_LINES);
+                ChartData chart = presenter.chartData(CHART_POINTS);
+                return () -> {
+                    showResults(results, lines, chart);
+                    setStatus("Ran trials; " + results.trials() + " in total.", false);
+                };
+            });
     }
 
     private void onReset() {
         run(
-                () -> {
-                    ResultsView results = presenter.reset();
-                    ChartData chart = presenter.chartData(CHART_POINTS);
-                    return () -> {
-                        showResults(results, List.of(), chart);
-                        setStatus("Trials cleared; the generator is back at its seed.", false);
-                    };
-                });
+            () -> {
+                ResultsView results = presenter.reset();
+                ChartData chart = presenter.chartData(CHART_POINTS);
+                return () -> {
+                    showResults(results, List.of(), chart);
+                    setStatus("Trials cleared; the generator is back at its seed.", false);
+                };
+            });
     }
 
     private void onExport() {
@@ -304,21 +304,21 @@ public final class MeasurementView {
         chooser.setInitialFileName("quantumlab-experiment.json");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
         File file =
-                chooser.showSaveDialog(
-                        root.getScene() == null ? null : root.getScene().getWindow());
+            chooser.showSaveDialog(
+                root.getScene() == null ? null : root.getScene().getWindow());
         if (file == null) {
             return;
         }
         Path path = file.toPath();
         run(
-                () -> {
-                    try {
-                        ExperimentExporter.write(path, presenter.exportJson());
-                    } catch (IOException e) {
-                        throw new UncheckedIOException(e);
-                    }
-                    return () -> setStatus("Exported to " + path, false);
-                });
+            () -> {
+                try {
+                    ExperimentExporter.write(path, presenter.exportJson());
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+                return () -> setStatus("Exported to " + path, false);
+            });
     }
 
     /**
@@ -328,27 +328,27 @@ public final class MeasurementView {
     private void run(Supplier<Runnable> work) {
         setBusy(true);
         worker.submit(
-                () -> {
-                    Runnable ui;
-                    try {
-                        ui = work.get();
-                    } catch (InvalidInputException e) {
-                        String message = e.getMessage();
-                        ui = () -> setStatus(message, true);
-                    } catch (UncheckedIOException e) {
-                        String message = "Could not write the file: " + e.getCause().getMessage();
-                        ui = () -> setStatus(message, true);
-                    } catch (RuntimeException e) {
-                        String message = "Unexpected error: " + e;
-                        ui = () -> setStatus(message, true);
-                    }
-                    Runnable update = ui;
-                    Platform.runLater(
-                            () -> {
-                                update.run();
-                                setBusy(false);
-                            });
-                });
+            () -> {
+                Runnable ui;
+                try {
+                    ui = work.get();
+                } catch (InvalidInputException e) {
+                    String message = e.getMessage();
+                    ui = () -> setStatus(message, true);
+                } catch (UncheckedIOException e) {
+                    String message = "Could not write the file: " + e.getCause().getMessage();
+                    ui = () -> setStatus(message, true);
+                } catch (RuntimeException e) {
+                    String message = "Unexpected error: " + e;
+                    ui = () -> setStatus(message, true);
+                }
+                Runnable update = ui;
+                Platform.runLater(
+                    () -> {
+                        update.run();
+                        setBusy(false);
+                    });
+            });
     }
 
     // ---------------------------------------------------------------- display
@@ -372,9 +372,9 @@ public final class MeasurementView {
 
     private void showResults(ResultsView r, List<String> lines, ChartData chart) {
         trialsOut.setText(
-                r.trials() == 0
-                        ? "No trials yet."
-                        : r.trials() + " trials (" + r.remaining() + " more allowed).");
+            r.trials() == 0
+                ? "No trials yet."
+                : r.trials() + " trials (" + r.remaining() + " more allowed).");
         table.getItems().setAll(r.rows());
         verdictOut.setText(r.trials() == 0 ? "" : r.verdict());
         history.getItems().setAll(lines);
@@ -432,7 +432,7 @@ public final class MeasurementView {
     }
 
     private static TableColumn<ResultsView.Row, String> column(
-            String title, double width, Function<ResultsView.Row, String> value) {
+        String title, double width, Function<ResultsView.Row, String> value) {
         TableColumn<ResultsView.Row, String> c = new TableColumn<>(title);
         c.setCellValueFactory(cell -> new SimpleStringProperty(value.apply(cell.getValue())));
         c.setPrefWidth(width);
