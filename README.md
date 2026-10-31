@@ -14,7 +14,8 @@ exactly from its seed, and every screen says what it models and what it does not
 **Classical decay (mode A).** A nucleus decays with probability 1 − e^(−λt). A detector, a
 trigger and a cat follow the nucleus deterministically. The screen shows the apparatus after each
 run, the random draw that decided it, and the tally over many runs against the theoretical
-probabilities. The nucleus and the cat always have a definite state; the randomness is ignorance of
+probabilities, with an observed-versus-theory chart and the running frequency on a logarithmic
+trial axis. The nucleus and the cat always have a definite state; the randomness is ignorance of
 the outcome, not a superposition.
 
 **Superposition and measurement (modes B and C).** Prepare a qubit state α|0⟩ + β|1⟩ with complex
@@ -96,7 +97,6 @@ nothing is measured.
 
 Not implemented yet:
 
-- Charts for the classical decay screen.
 - A screen for the phase-dependence (interference) curve.
 - An optional Spring Boot service.
 
@@ -122,27 +122,30 @@ statement of scope for each screen.
 
 From the repository root:
 
+```
 mvn test
-
+```
 
 ## Run the desktop application
 
+```
 mvn install -DskipTests
 mvn -pl quantumlab-desktop javafx:run
-
+```
 
 In IntelliJ IDEA you can instead run `dev.quantumlab.desktop.QuantumLabLauncher`, adding the VM
 option `--enable-native-access=ALL-UNNAMED`.
 
 ## Project layout
 
-quantumlab-math complex linear algebra
-quantumlab-physics qubits, Born rule, measurement, decay model, Schrödinger solver,
-scattering, time evolution, two-qubit states
-quantumlab-simulation experiment sessions, statistics, export, explanations
-quantumlab-desktop JavaFX application
-docs/ architecture decisions, mathematics notes, validation notes
-
+```
+quantumlab-math         complex linear algebra
+quantumlab-physics      qubits, Born rule, measurement, decay model, Schrödinger solver,
+                        scattering, time evolution, two-qubit states
+quantumlab-simulation   experiment sessions, statistics, export, explanations
+quantumlab-desktop      JavaFX application
+docs/                   architecture decisions, mathematics notes, validation notes
+```
 
 The desktop module is deliberately thin: presenters without any JavaFX types hold the logic and
 are unit-tested; the views only lay out controls and display immutable results.
