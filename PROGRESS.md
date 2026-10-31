@@ -5,21 +5,21 @@ here is claimed as working unless it was run.
 
 ## Phases
 
-| Phase | Scope | Status |
-|-------|-------|--------|
-| 0 | Inspect the environment, plan | Done |
-| 1 | Mathematics: complex linear algebra, qubit, Born rule, measurement, decay model | Done |
-| 2 | First working cat laboratory with desktop UI (modes A, B, C) | Screens, README, ADRs and a CI definition done; the CI workflow has not run |
-| 3 | Finite-difference 1D Schrödinger solver | Done: solver, convergence study and two screens (Quantum well, Convergence) |
-| 4 | Barriers, tunnelling, wave packet, composite systems, decoherence | Done: stationary tunnelling through one or two barriers (Tunnelling screen), time-dependent wave packet (Crank–Nicolson), two-qubit composite system with CHSH (Composite system screen), and dephasing of a single qubit (Decoherence screen) |
-| 5 | Desktop polish | In progress. Done: tables sized to their rows, logarithmic trial axis, distinct series colours, untruncated titles, one shared worker and table-column helper for all screens, footer scope notes taken from the explanation catalogue, re-solve when the potential is switched. Remaining: charts for the classical screen, a screen for the interference curve, the grid-point error wording |
-| 6 | Optional Spring Boot service | Not started |
-| 7 | Release quality | Not started |
+| Phase | Scope                                                                           | Status                                                                                                                                                                                                                                                                                                                                                                                         |
+|-------|---------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 0     | Inspect the environment, plan                                                   | Done                                                                                                                                                                                                                                                                                                                                                                                           |
+| 1     | Mathematics: complex linear algebra, qubit, Born rule, measurement, decay model | Done                                                                                                                                                                                                                                                                                                                                                                                           |
+| 2     | First working cat laboratory with desktop UI (modes A, B, C)                    | Screens, README, ADRs and a CI definition done; the CI workflow has not run                                                                                                                                                                                                                                                                                                                    |
+| 3     | Finite-difference 1D Schrödinger solver                                         | Done: solver, convergence study and two screens (Quantum well, Convergence)                                                                                                                                                                                                                                                                                                                    |
+| 4     | Barriers, tunnelling, wave packet, composite systems, decoherence               | Done: stationary tunnelling through one or two barriers (Tunnelling screen), time-dependent wave packet (Crank–Nicolson), two-qubit composite system with CHSH (Composite system screen), and dephasing of a single qubit (Decoherence screen)                                                                                                                                                 |
+| 5     | Desktop polish                                                                  | In progress. Done: tables sized to their rows, logarithmic trial axis, distinct series colours, untruncated titles, one shared worker and table-column helper for all screens, footer scope notes taken from the explanation catalogue, re-solve when the potential is switched. Remaining: charts for the classical screen, a screen for the interference curve, the grid-point error wording |
+| 6     | Optional Spring Boot service                                                    | Not started                                                                                                                                                                                                                                                                                                                                                                                    |
+| 7     | Release quality                                                                 | Not started                                                                                                                                                                                                                                                                                                                                                                                    |
 
 ## Last verified run
 
 - Date: 2026-10-31.
-- Command: `mvn test` from the repository root, on the code of commit 245e6ed.
+- Command: `mvn test` from the repository root, on the code of commit e68cebf.
 - Environment: Windows, Microsoft OpenJDK 25.0.5, Maven 3.9.16, JavaFX 25.0.1.
 - Result: BUILD SUCCESS, 530 tests (math 71, physics 193, simulation 107, desktop 159), no failures.
 - `mvn install -DskipTests` also succeeded in the same session.
@@ -36,11 +36,12 @@ here is claimed as working unless it was run.
   probe energy, narrow oscillator box, invalid input).
 - Measurement and Convergence tabs checked by hand after the polish step: no empty table rows, a
   logarithmic trial axis, distinct colours for the two series.
+- Quantum well tab checked by hand: switching between the infinite well and the harmonic
+  oscillator re-solves at once (table, setup panel and charts follow the box), and editing a
+  field alone changes nothing until Solve is pressed.
 
 ## Not yet verified
 
-- Switching the potential on the Quantum well tab now re-solves at once. The code is written; it has
-  not yet been run, so it is not counted as working.
 - The Wave packet tab has automated tests (presenter and physics) but has not been exercised by
   hand since it was added; this list should be updated once it has.
 - The contents of an exported JSON file have not been inspected by hand (the exporter itself is
