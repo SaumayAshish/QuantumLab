@@ -1,5 +1,6 @@
-
 package dev.quantumlab.desktop;
+
+import static dev.quantumlab.desktop.Tables.column;
 
 import dev.quantumlab.physics.QubitState;
 import dev.quantumlab.physics.StandardBasis;
@@ -11,13 +12,8 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -26,7 +22,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -69,13 +64,7 @@ public final class MeasurementView {
             new Preset("|−i⟩", QubitState.minusI()));
 
     private final LabPresenter presenter = new LabPresenter();
-    private final ExecutorService worker =
-        Executors.newSingleThreadExecutor(
-            task -> {
-                Thread t = new Thread(task, "quantumlab-worker");
-                t.setDaemon(true);
-                return t;
-            });
+    private final Worker worker = new Worker("quantumlab-worker");
 
     private final BorderPane root = new BorderPane();
     private final List<Button> controls = new ArrayList<>();
@@ -125,7 +114,7 @@ public final class MeasurementView {
      * Stops the worker thread. Call when the window closes.
      */
     public void shutdown() {
-        worker.shutdownNow();
+        worker.shutdown();
     }
 
     // ---------------------------------------------------------------- layout
@@ -326,29 +315,7 @@ public final class MeasurementView {
      * the JavaFX thread. Controls are disabled while the work runs.
      */
     private void run(Supplier<Runnable> work) {
-        setBusy(true);
-        worker.submit(
-            () -> {
-                Runnable ui;
-                try {
-                    ui = work.get();
-                } catch (InvalidInputException e) {
-                    String message = e.getMessage();
-                    ui = () -> setStatus(message, true);
-                } catch (UncheckedIOException e) {
-                    String message = "Could not write the file: " + e.getCause().getMessage();
-                    ui = () -> setStatus(message, true);
-                } catch (RuntimeException e) {
-                    String message = "Unexpected error: " + e;
-                    ui = () -> setStatus(message, true);
-                }
-                Runnable update = ui;
-                Platform.runLater(
-                    () -> {
-                        update.run();
-                        setBusy(false);
-                    });
-            });
+        worker.run(work, message -> setStatus(message, true), this::setBusy);
     }
 
     // ---------------------------------------------------------------- display
@@ -429,14 +396,5 @@ public final class MeasurementView {
     private static void addRow(GridPane grid, int row, String label, Node content) {
         grid.add(new Label(label), 0, row);
         grid.add(content, 1, row);
-    }
-
-    private static TableColumn<ResultsView.Row, String> column(
-        String title, double width, Function<ResultsView.Row, String> value) {
-        TableColumn<ResultsView.Row, String> c = new TableColumn<>(title);
-        c.setCellValueFactory(cell -> new SimpleStringProperty(value.apply(cell.getValue())));
-        c.setPrefWidth(width);
-        c.setSortable(false);
-        return c;
     }
 }

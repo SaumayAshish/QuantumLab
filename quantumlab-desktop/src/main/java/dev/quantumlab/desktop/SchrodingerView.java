@@ -1,14 +1,11 @@
 package dev.quantumlab.desktop;
 
+import static dev.quantumlab.desktop.Tables.column;
+
 import dev.quantumlab.simulation.SeriesPoint;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.function.Function;
 import java.util.function.Supplier;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -19,16 +16,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
-import javafx.scene.layout.ColumnConstraints;
 
 /**
  * The one-dimensional Schrödinger screen: pick a potential, solve for its lowest energy levels on a
@@ -45,13 +41,7 @@ public final class SchrodingerView {
             + " nucleus.";
 
     private final SchrodingerPresenter presenter = new SchrodingerPresenter();
-    private final ExecutorService worker =
-        Executors.newSingleThreadExecutor(
-            task -> {
-                Thread t = new Thread(task, "quantumlab-schrodinger-worker");
-                t.setDaemon(true);
-                return t;
-            });
+    private final Worker worker = new Worker("quantumlab-schrodinger-worker");
 
     private final BorderPane root = new BorderPane();
     private final List<Button> controls = new ArrayList<>();
@@ -133,7 +123,7 @@ public final class SchrodingerView {
      * Stops the worker thread. Call when the window closes.
      */
     public void shutdown() {
-        worker.shutdownNow();
+        worker.shutdown();
     }
 
     // ---------------------------------------------------------------- layout
@@ -270,26 +260,7 @@ public final class SchrodingerView {
      * the JavaFX thread. Controls are disabled while the work runs.
      */
     private void run(Supplier<Runnable> work) {
-        setBusy(true);
-        worker.submit(
-            () -> {
-                Runnable ui;
-                try {
-                    ui = work.get();
-                } catch (InvalidInputException e) {
-                    String message = e.getMessage();
-                    ui = () -> setStatus(message, true);
-                } catch (RuntimeException e) {
-                    String message = "Unexpected error: " + e;
-                    ui = () -> setStatus(message, true);
-                }
-                Runnable update = ui;
-                Platform.runLater(
-                    () -> {
-                        update.run();
-                        setBusy(false);
-                    });
-            });
+        worker.run(work, message -> setStatus(message, true), this::setBusy);
     }
 
     // ---------------------------------------------------------------- display
@@ -405,14 +376,5 @@ public final class SchrodingerView {
             s.getData().add(new XYChart.Data<>(p.x(), p.y()));
         }
         return s;
-    }
-
-    private static TableColumn<SchrodingerPresenter.LevelRow, String> column(
-        String title, double width, Function<SchrodingerPresenter.LevelRow, String> value) {
-        TableColumn<SchrodingerPresenter.LevelRow, String> c = new TableColumn<>(title);
-        c.setCellValueFactory(cell -> new SimpleStringProperty(value.apply(cell.getValue())));
-        c.setPrefWidth(width);
-        c.setSortable(false);
-        return c;
     }
 }

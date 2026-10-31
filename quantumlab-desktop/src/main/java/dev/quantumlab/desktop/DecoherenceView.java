@@ -1,15 +1,11 @@
-
 package dev.quantumlab.desktop;
+
+import static dev.quantumlab.desktop.Tables.column;
 
 import dev.quantumlab.simulation.SeriesPoint;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.function.Function;
 import java.util.function.Supplier;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -20,7 +16,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -48,13 +43,7 @@ public final class DecoherenceView {
         "CHART_COLOR_1: #1f6fb4; CHART_COLOR_2: #e8590c; CHART_COLOR_3: #2a9d4b;";
 
     private final DecoherencePresenter presenter = new DecoherencePresenter();
-    private final ExecutorService worker =
-        Executors.newSingleThreadExecutor(
-            task -> {
-                Thread t = new Thread(task, "quantumlab-decoherence-worker");
-                t.setDaemon(true);
-                return t;
-            });
+    private final Worker worker = new Worker("quantumlab-decoherence-worker");
 
     private final BorderPane root = new BorderPane();
     private final List<Button> controls = new ArrayList<>();
@@ -152,7 +141,7 @@ public final class DecoherenceView {
 
     /** Stops the worker thread. Call when the window closes. */
     public void shutdown() {
-        worker.shutdownNow();
+        worker.shutdown();
     }
 
     // ---------------------------------------------------------------- layout
@@ -273,26 +262,7 @@ public final class DecoherenceView {
      * the JavaFX thread. Controls are disabled while the work runs.
      */
     private void run(Supplier<Runnable> work) {
-        setBusy(true);
-        worker.submit(
-            () -> {
-                Runnable ui;
-                try {
-                    ui = work.get();
-                } catch (InvalidInputException e) {
-                    String message = e.getMessage();
-                    ui = () -> setStatus(message, true);
-                } catch (RuntimeException e) {
-                    String message = "Unexpected error: " + e;
-                    ui = () -> setStatus(message, true);
-                }
-                Runnable update = ui;
-                Platform.runLater(
-                    () -> {
-                        update.run();
-                        setBusy(false);
-                    });
-            });
+        worker.run(work, message -> setStatus(message, true), this::setBusy);
     }
 
     // ---------------------------------------------------------------- display
@@ -363,15 +333,6 @@ public final class DecoherenceView {
             s.getData().add(new XYChart.Data<>(p.x(), p.y()));
         }
         return s;
-    }
-
-    private static TableColumn<DecoherencePresenter.RowView, String> column(
-        String title, double width, Function<DecoherencePresenter.RowView, String> value) {
-        TableColumn<DecoherencePresenter.RowView, String> c = new TableColumn<>(title);
-        c.setCellValueFactory(cell -> new SimpleStringProperty(value.apply(cell.getValue())));
-        c.setPrefWidth(width);
-        c.setSortable(false);
-        return c;
     }
 
     private static Label fringeCaption() {

@@ -3,13 +3,10 @@ package dev.quantumlab.desktop;
 import dev.quantumlab.simulation.SeriesPoint;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -48,13 +45,7 @@ public final class WavePacketView {
     private static final double FRAME_MILLIS = 40.0;
 
     private final WavePacketPresenter presenter = new WavePacketPresenter();
-    private final ExecutorService worker =
-        Executors.newSingleThreadExecutor(
-            task -> {
-                Thread t = new Thread(task, "quantumlab-wavepacket-worker");
-                t.setDaemon(true);
-                return t;
-            });
+    private final Worker worker = new Worker("quantumlab-wavepacket-worker");
 
     private final BorderPane root = new BorderPane();
     private final List<Button> controls = new ArrayList<>();
@@ -156,7 +147,7 @@ public final class WavePacketView {
     /** Stops the playback and the worker thread. Call when the window closes. */
     public void shutdown() {
         timeline.stop();
-        worker.shutdownNow();
+        worker.shutdown();
     }
 
     // ---------------------------------------------------------------- layout
@@ -284,26 +275,7 @@ public final class WavePacketView {
     private void run(Supplier<Runnable> work) {
         timeline.pause();
         playButton.setText("Play");
-        setBusy(true);
-        worker.submit(
-            () -> {
-                Runnable ui;
-                try {
-                    ui = work.get();
-                } catch (InvalidInputException e) {
-                    String message = e.getMessage();
-                    ui = () -> setStatus(message, true);
-                } catch (RuntimeException e) {
-                    String message = "Unexpected error: " + e;
-                    ui = () -> setStatus(message, true);
-                }
-                Runnable update = ui;
-                Platform.runLater(
-                    () -> {
-                        update.run();
-                        setBusy(false);
-                    });
-            });
+        worker.run(work, message -> setStatus(message, true), this::setBusy);
     }
 
     // ---------------------------------------------------------------- playback

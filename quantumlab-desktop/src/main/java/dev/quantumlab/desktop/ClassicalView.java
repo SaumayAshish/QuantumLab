@@ -1,5 +1,7 @@
 package dev.quantumlab.desktop;
 
+import static dev.quantumlab.desktop.Tables.column;
+
 import dev.quantumlab.simulation.ExperimentExporter;
 
 import java.io.File;
@@ -8,20 +10,14 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -44,18 +40,12 @@ public final class ClassicalView {
     private static final String DEFAULT_TIME = "1";
     private static final String DEFAULT_SEED = "12345";
     private static final String SCOPE_NOTE =
-            "Every link in the chain has a definite state at every moment. The randomness is"
-                    + " ignorance of when the nucleus decays, not a superposition: this screen never"
-                    + " shows a cat that is both alive and dead.";
+        "Every link in the chain has a definite state at every moment. The randomness is"
+            + " ignorance of when the nucleus decays, not a superposition: this screen never"
+            + " shows a cat that is both alive and dead.";
 
     private final ClassicalPresenter presenter = new ClassicalPresenter();
-    private final ExecutorService worker =
-            Executors.newSingleThreadExecutor(
-                    task -> {
-                        Thread t = new Thread(task, "quantumlab-classical-worker");
-                        t.setDaemon(true);
-                        return t;
-                    });
+    private final Worker worker = new Worker("quantumlab-classical-worker");
 
     private final BorderPane root = new BorderPane();
     private final List<Button> controls = new ArrayList<>();
@@ -96,7 +86,7 @@ public final class ClassicalView {
      * Stops the worker thread. Call when the window closes.
      */
     public void shutdown() {
-        worker.shutdownNow();
+        worker.shutdown();
     }
 
     // ---------------------------------------------------------------- layout
@@ -122,22 +112,22 @@ public final class ClassicalView {
         addRow(law, 2, "P(not decayed by t)", survivalOut);
 
         HBox batch =
-                new HBox(8, new Label("Runs"), runs, button("Run", this::onRunMany));
+            new HBox(8, new Label("Runs"), runs, button("Run", this::onRunMany));
         batch.setAlignment(Pos.CENTER_LEFT);
 
         VBox box =
-                new VBox(
-                        10,
-                        heading("Decay law"),
-                        form,
-                        button("Prepare experiment", this::onPrepare),
-                        heading("Prepared law"),
-                        law,
-                        heading("Run"),
-                        button("Run once", this::onRunOnce),
-                        batch,
-                        button("Reset runs", this::onReset),
-                        button("Export JSON…", this::onExport));
+            new VBox(
+                10,
+                heading("Decay law"),
+                form,
+                button("Prepare experiment", this::onPrepare),
+                heading("Prepared law"),
+                law,
+                heading("Run"),
+                button("Run once", this::onRunOnce),
+                batch,
+                button("Reset runs", this::onReset),
+                button("Export JSON…", this::onExport));
         box.setPadding(new Insets(16));
         box.setPrefWidth(400);
         return box;
@@ -145,15 +135,15 @@ public final class ClassicalView {
 
     private Node buildResultsPane() {
         HBox chain =
-                new HBox(
-                        10,
-                        link("Nucleus", nucleusOut),
-                        arrow(),
-                        link("Detector", detectorOut),
-                        arrow(),
-                        link("Trigger", triggerOut),
-                        arrow(),
-                        link("Cat", catOut));
+            new HBox(
+                10,
+                link("Nucleus", nucleusOut),
+                arrow(),
+                link("Detector", detectorOut),
+                arrow(),
+                link("Trigger", triggerOut),
+                arrow(),
+                link("Cat", catOut));
         chain.setAlignment(Pos.CENTER_LEFT);
 
         table.getColumns().add(column("Outcome", 110, ResultsView.Row::label));
@@ -169,16 +159,16 @@ public final class ClassicalView {
         verdictOut.setWrapText(true);
 
         VBox box =
-                new VBox(
-                        10,
-                        heading("Apparatus (state after the latest run)"),
-                        chain,
-                        drawOut,
-                        heading("Repeated runs"),
-                        runsOut,
-                        table,
-                        verdictOut,
-                        new ExplanationPane(ExplanationText.forClassicalScreen()).node());
+            new VBox(
+                10,
+                heading("Apparatus (state after the latest run)"),
+                chain,
+                drawOut,
+                heading("Repeated runs"),
+                runsOut,
+                table,
+                verdictOut,
+                new ExplanationPane(ExplanationText.forClassicalScreen()).node());
         box.setPadding(new Insets(16));
         return box;
     }
@@ -195,63 +185,63 @@ public final class ClassicalView {
 
     private void onPrepare() {
         ClassicalPresenter.Request request =
-                new ClassicalPresenter.Request(rate.getText(), time.getText(), seed.getText());
+            new ClassicalPresenter.Request(rate.getText(), time.getText(), seed.getText());
         run(
-                () -> {
-                    ClassicalPresenter.SetupView setup = presenter.prepare(request);
-                    ResultsView results = presenter.results();
-                    ClassicalPresenter.ApparatusView apparatus = presenter.apparatus();
-                    String draw = presenter.lastDraw();
-                    return () -> {
-                        showSetup(setup);
-                        showResults(results);
-                        showApparatus(apparatus, draw);
-                        setStatus("Experiment prepared. Seed " + request.seed().trim() + ".", false);
-                    };
-                });
+            () -> {
+                ClassicalPresenter.SetupView setup = presenter.prepare(request);
+                ResultsView results = presenter.results();
+                ClassicalPresenter.ApparatusView apparatus = presenter.apparatus();
+                String draw = presenter.lastDraw();
+                return () -> {
+                    showSetup(setup);
+                    showResults(results);
+                    showApparatus(apparatus, draw);
+                    setStatus("Experiment prepared. Seed " + request.seed().trim() + ".", false);
+                };
+            });
     }
 
     private void onRunOnce() {
         run(
-                () -> {
-                    ClassicalPresenter.ApparatusView apparatus = presenter.runOnce();
-                    String draw = presenter.lastDraw();
-                    ResultsView results = presenter.results();
-                    return () -> {
-                        showApparatus(apparatus, draw);
-                        showResults(results);
-                        setStatus("One run; " + results.trials() + " in total.", false);
-                    };
-                });
+            () -> {
+                ClassicalPresenter.ApparatusView apparatus = presenter.runOnce();
+                String draw = presenter.lastDraw();
+                ResultsView results = presenter.results();
+                return () -> {
+                    showApparatus(apparatus, draw);
+                    showResults(results);
+                    setStatus("One run; " + results.trials() + " in total.", false);
+                };
+            });
     }
 
     private void onRunMany() {
         String count = runs.getText();
         run(
-                () -> {
-                    ResultsView results = presenter.run(count);
-                    ClassicalPresenter.ApparatusView apparatus = presenter.apparatus();
-                    String draw = presenter.lastDraw();
-                    return () -> {
-                        showApparatus(apparatus, draw);
-                        showResults(results);
-                        setStatus("Ran the experiment; " + results.trials() + " runs in total.", false);
-                    };
-                });
+            () -> {
+                ResultsView results = presenter.run(count);
+                ClassicalPresenter.ApparatusView apparatus = presenter.apparatus();
+                String draw = presenter.lastDraw();
+                return () -> {
+                    showApparatus(apparatus, draw);
+                    showResults(results);
+                    setStatus("Ran the experiment; " + results.trials() + " runs in total.", false);
+                };
+            });
     }
 
     private void onReset() {
         run(
-                () -> {
-                    ResultsView results = presenter.reset();
-                    ClassicalPresenter.ApparatusView apparatus = presenter.apparatus();
-                    String draw = presenter.lastDraw();
-                    return () -> {
-                        showApparatus(apparatus, draw);
-                        showResults(results);
-                        setStatus("Runs cleared; the generator is back at its seed.", false);
-                    };
-                });
+            () -> {
+                ResultsView results = presenter.reset();
+                ClassicalPresenter.ApparatusView apparatus = presenter.apparatus();
+                String draw = presenter.lastDraw();
+                return () -> {
+                    showApparatus(apparatus, draw);
+                    showResults(results);
+                    setStatus("Runs cleared; the generator is back at its seed.", false);
+                };
+            });
     }
 
     private void onExport() {
@@ -260,21 +250,21 @@ public final class ClassicalView {
         chooser.setInitialFileName("quantumlab-classical-decay.json");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON", "*.json"));
         File file =
-                chooser.showSaveDialog(
-                        root.getScene() == null ? null : root.getScene().getWindow());
+            chooser.showSaveDialog(
+                root.getScene() == null ? null : root.getScene().getWindow());
         if (file == null) {
             return;
         }
         Path path = file.toPath();
         run(
-                () -> {
-                    try {
-                        ExperimentExporter.write(path, presenter.exportJson());
-                    } catch (IOException e) {
-                        throw new UncheckedIOException(e);
-                    }
-                    return () -> setStatus("Exported to " + path, false);
-                });
+            () -> {
+                try {
+                    ExperimentExporter.write(path, presenter.exportJson());
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+                return () -> setStatus("Exported to " + path, false);
+            });
     }
 
     /**
@@ -282,29 +272,7 @@ public final class ClassicalView {
      * the JavaFX thread. Controls are disabled while the work runs.
      */
     private void run(Supplier<Runnable> work) {
-        setBusy(true);
-        worker.submit(
-                () -> {
-                    Runnable ui;
-                    try {
-                        ui = work.get();
-                    } catch (InvalidInputException e) {
-                        String message = e.getMessage();
-                        ui = () -> setStatus(message, true);
-                    } catch (UncheckedIOException e) {
-                        String message = "Could not write the file: " + e.getCause().getMessage();
-                        ui = () -> setStatus(message, true);
-                    } catch (RuntimeException e) {
-                        String message = "Unexpected error: " + e;
-                        ui = () -> setStatus(message, true);
-                    }
-                    Runnable update = ui;
-                    Platform.runLater(
-                            () -> {
-                                update.run();
-                                setBusy(false);
-                            });
-                });
+        worker.run(work, message -> setStatus(message, true), this::setBusy);
     }
 
     // ---------------------------------------------------------------- display
@@ -325,9 +293,9 @@ public final class ClassicalView {
 
     private void showResults(ResultsView r) {
         runsOut.setText(
-                r.trials() == 0
-                        ? "No runs yet."
-                        : r.trials() + " runs (" + r.remaining() + " more allowed).");
+            r.trials() == 0
+                ? "No runs yet."
+                : r.trials() + " runs (" + r.remaining() + " more allowed).");
         table.getItems().setAll(r.rows());
         verdictOut.setText(r.trials() == 0 ? "" : r.verdict());
     }
@@ -373,14 +341,5 @@ public final class ClassicalView {
     private static void addRow(GridPane grid, int row, String label, Node content) {
         grid.add(new Label(label), 0, row);
         grid.add(content, 1, row);
-    }
-
-    private static TableColumn<ResultsView.Row, String> column(
-            String title, double width, Function<ResultsView.Row, String> value) {
-        TableColumn<ResultsView.Row, String> c = new TableColumn<>(title);
-        c.setCellValueFactory(cell -> new SimpleStringProperty(value.apply(cell.getValue())));
-        c.setPrefWidth(width);
-        c.setSortable(false);
-        return c;
     }
 }

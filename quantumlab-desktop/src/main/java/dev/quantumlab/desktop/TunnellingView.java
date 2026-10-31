@@ -1,14 +1,11 @@
 package dev.quantumlab.desktop;
 
+import static dev.quantumlab.desktop.Tables.column;
+
 import dev.quantumlab.simulation.SeriesPoint;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.function.Function;
 import java.util.function.Supplier;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -19,7 +16,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -43,13 +39,7 @@ public final class TunnellingView {
             + " followed. It is a separate model from the cat experiment.";
 
     private final TunnellingPresenter presenter = new TunnellingPresenter();
-    private final ExecutorService worker =
-        Executors.newSingleThreadExecutor(
-            task -> {
-                Thread t = new Thread(task, "quantumlab-tunnelling-worker");
-                t.setDaemon(true);
-                return t;
-            });
+    private final Worker worker = new Worker("quantumlab-tunnelling-worker");
 
     private final BorderPane root = new BorderPane();
     private final List<Button> controls = new ArrayList<>();
@@ -135,7 +125,7 @@ public final class TunnellingView {
      * Stops the worker thread. Call when the window closes.
      */
     public void shutdown() {
-        worker.shutdownNow();
+        worker.shutdown();
     }
 
     // ---------------------------------------------------------------- layout
@@ -256,26 +246,7 @@ public final class TunnellingView {
      * the JavaFX thread. Controls are disabled while the work runs.
      */
     private void run(Supplier<Runnable> work) {
-        setBusy(true);
-        worker.submit(
-            () -> {
-                Runnable ui;
-                try {
-                    ui = work.get();
-                } catch (InvalidInputException e) {
-                    String message = e.getMessage();
-                    ui = () -> setStatus(message, true);
-                } catch (RuntimeException e) {
-                    String message = "Unexpected error: " + e;
-                    ui = () -> setStatus(message, true);
-                }
-                Runnable update = ui;
-                Platform.runLater(
-                    () -> {
-                        update.run();
-                        setBusy(false);
-                    });
-            });
+        worker.run(work, message -> setStatus(message, true), this::setBusy);
     }
 
     // ---------------------------------------------------------------- display
@@ -360,14 +331,5 @@ public final class TunnellingView {
             s.getData().add(new XYChart.Data<>(p.x(), p.y()));
         }
         return s;
-    }
-
-    private static TableColumn<TunnellingPresenter.RowView, String> column(
-        String title, double width, Function<TunnellingPresenter.RowView, String> value) {
-        TableColumn<TunnellingPresenter.RowView, String> c = new TableColumn<>(title);
-        c.setCellValueFactory(cell -> new SimpleStringProperty(value.apply(cell.getValue())));
-        c.setPrefWidth(width);
-        c.setSortable(false);
-        return c;
     }
 }

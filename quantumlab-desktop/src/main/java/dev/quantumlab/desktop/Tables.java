@@ -1,7 +1,10 @@
 package dev.quantumlab.desktop;
 
+import java.util.function.Function;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
 /** Layout helpers shared by the screens' results tables. Must be used on the JavaFX thread only. */
@@ -23,5 +26,14 @@ final class Tables {
                 () -> TableSizing.heightFor(table.getItems().size()), table.getItems());
         table.prefHeightProperty().bind(height);
         table.minHeightProperty().bind(height);
+    }
+
+    /** A read-only text column of fixed starting width that cannot be sorted. */
+    static <T> TableColumn<T, String> column(String title, double width, Function<T, String> value) {
+        TableColumn<T, String> c = new TableColumn<>(title);
+        c.setCellValueFactory(cell -> new SimpleStringProperty(value.apply(cell.getValue())));
+        c.setPrefWidth(width);
+        c.setSortable(false);
+        return c;
     }
 }
