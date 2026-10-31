@@ -1,8 +1,10 @@
 package dev.quantumlab.desktop;
 
+import dev.quantumlab.simulation.ClassicalDecaySession;
 import dev.quantumlab.simulation.MeasurementSession;
 import dev.quantumlab.simulation.OutcomeStatistics;
 import dev.quantumlab.simulation.SeriesPoint;
+import dev.quantumlab.simulation.StatisticalSummary;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,12 +20,12 @@ import java.util.List;
  *     the outcome among them (empty before the first trial)
  */
 public record ChartData(
-        List<String> labels,
-        List<Double> observed,
-        List<Double> theoretical,
-        String convergenceLabel,
-        double convergenceTheory,
-        List<SeriesPoint> convergence) {
+    List<String> labels,
+    List<Double> observed,
+    List<Double> theoretical,
+    String convergenceLabel,
+    double convergenceTheory,
+    List<SeriesPoint> convergence) {
 
     public ChartData {
         labels = List.copyOf(labels);
@@ -34,22 +36,37 @@ public record ChartData(
 
     /** The convergence plot follows the first outcome; for a qubit the other is its complement. */
     static ChartData of(MeasurementSession session, int maxPoints) {
+        requireEnoughPoints(maxPoints);
+        return build(session.labels(), session.summary(), session.runningFrequency(0, maxPoints));
+    }
+
+    /**
+     * The same two charts for the classical decay experiment. The convergence plot follows the
+     * first outcome, "not decayed".
+     */
+    static ChartData ofClassical(ClassicalDecaySession session, int maxPoints) {
+        requireEnoughPoints(maxPoints);
+        return build(
+            ClassicalDecaySession.LABELS,
+            session.summary(),
+            session.runningFrequency(0, maxPoints));
+    }
+
+    private static void requireEnoughPoints(int maxPoints) {
         if (maxPoints < 2) {
             throw new IllegalArgumentException("A chart needs at least 2 points, got " + maxPoints);
         }
-        List<String> labels = session.labels();
+    }
+
+    private static ChartData build(
+        List<String> labels, StatisticalSummary summary, List<SeriesPoint> running) {
         List<Double> observed = new ArrayList<>(labels.size());
         List<Double> theoretical = new ArrayList<>(labels.size());
-        for (OutcomeStatistics o : session.summary().outcomes()) {
+        for (OutcomeStatistics o : summary.outcomes()) {
             observed.add(o.observed());
             theoretical.add(o.theoretical());
         }
         return new ChartData(
-                labels,
-                observed,
-                theoretical,
-                labels.get(0),
-                theoretical.get(0),
-                session.runningFrequency(0, maxPoints));
+            labels, observed, theoretical, labels.get(0), theoretical.get(0), running);
     }
 }

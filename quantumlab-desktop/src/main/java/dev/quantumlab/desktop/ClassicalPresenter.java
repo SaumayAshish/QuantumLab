@@ -16,43 +16,49 @@ import dev.quantumlab.simulation.Formatting;
  */
 public final class ClassicalPresenter {
 
-    /** Raw field contents for one experiment. */
-    public record Request(String decayRate, String observationTime, String seed) {}
+    /**
+     * Raw field contents for one experiment.
+     */
+    public record Request(String decayRate, String observationTime, String seed) {
+    }
 
     /**
      * The configured decay law, formatted.
      *
-     * @param decayRate λ
-     * @param observationTime t
-     * @param halfLife ln 2 / λ, or a note that the nucleus is stable
-     * @param decayProbability P(decayed by t)
+     * @param decayRate           λ
+     * @param observationTime     t
+     * @param halfLife            ln 2 / λ, or a note that the nucleus is stable
+     * @param decayProbability    P(decayed by t)
      * @param survivalProbability P(not decayed by t)
      */
     public record SetupView(
-            String decayRate,
-            String observationTime,
-            String halfLife,
-            String decayProbability,
-            String survivalProbability) {}
+        String decayRate,
+        String observationTime,
+        String halfLife,
+        String decayProbability,
+        String survivalProbability) {
+    }
 
-    /** The apparatus chain, one plain-language state per link. */
+    /**
+     * The apparatus chain, one plain-language state per link.
+     */
     public record ApparatusView(String nucleus, String detector, String trigger, String cat) {
 
         static ApparatusView of(ApparatusOutcome o) {
             return new ApparatusView(
-                    o.nucleusDecayed() ? "decayed" : "intact",
-                    switch (o.detector()) {
-                        case NO_COUNT -> "no count";
-                        case COUNT -> "count registered";
-                    },
-                    switch (o.trigger()) {
-                        case ARMED -> "armed";
-                        case RELEASED -> "released";
-                    },
-                    switch (o.cat()) {
-                        case ALIVE -> "alive";
-                        case DEAD -> "dead";
-                    });
+                o.nucleusDecayed() ? "decayed" : "intact",
+                switch (o.detector()) {
+                    case NO_COUNT -> "no count";
+                    case COUNT -> "count registered";
+                },
+                switch (o.trigger()) {
+                    case ARMED -> "armed";
+                    case RELEASED -> "released";
+                },
+                switch (o.cat()) {
+                    case ALIVE -> "alive";
+                    case DEAD -> "dead";
+                });
         }
     }
 
@@ -93,14 +99,16 @@ public final class ClassicalPresenter {
         double halfLife = c.model().halfLife();
         double[] born = fresh.theoreticalProbabilities();
         return new SetupView(
-                Formatting.fixed(c.decayRate(), 4),
-                Formatting.fixed(c.observationTime(), 4),
-                Double.isInfinite(halfLife) ? "∞ (stable)" : Formatting.fixed(halfLife, 4),
-                Formatting.percent(born[1]),
-                Formatting.percent(born[0]));
+            Formatting.fixed(c.decayRate(), 4),
+            Formatting.fixed(c.observationTime(), 4),
+            Double.isInfinite(halfLife) ? "∞ (stable)" : Formatting.fixed(halfLife, 4),
+            Formatting.percent(born[1]),
+            Formatting.percent(born[0]));
     }
 
-    /** Performs a single run and returns the resulting apparatus chain. */
+    /**
+     * Performs a single run and returns the resulting apparatus chain.
+     */
     public ApparatusView runOnce() {
         ClassicalDecaySession s = requireExperiment();
         if (s.remainingCapacity() == 0) {
@@ -125,7 +133,9 @@ public final class ClassicalPresenter {
         return ResultsView.of(s.summary(), s.remainingCapacity());
     }
 
-    /** Clears all runs and rewinds the generator to the seed. */
+    /**
+     * Clears all runs and rewinds the generator to the seed.
+     */
     public ResultsView reset() {
         ClassicalDecaySession s = requireExperiment();
         s.reset();
@@ -137,12 +147,25 @@ public final class ClassicalPresenter {
         return ResultsView.of(s.summary(), s.remainingCapacity());
     }
 
-    /** The apparatus as it stands: its initial state before any run, else the last run's record. */
+    /**
+     * The apparatus as it stands: its initial state before any run, else the last run's record.
+     */
     public ApparatusView apparatus() {
         return ApparatusView.of(requireExperiment().currentApparatus());
     }
 
-    /** Shows how the last run's random draw decided the nucleus's fate. */
+    /**
+     * The numbers for the two charts, from the runs so far.
+     *
+     * @param maxPoints at most this many points (at least 2) on the convergence curve
+     */
+    public ChartData chartData(int maxPoints) {
+        return ChartData.ofClassical(requireExperiment(), maxPoints);
+    }
+
+    /**
+     * Shows how the last run's random draw decided the nucleus's fate.
+     */
     public String lastDraw() {
         ClassicalDecaySession s = requireExperiment();
         if (s.lastRun().isEmpty()) {
@@ -151,12 +174,14 @@ public final class ClassicalPresenter {
         ClassicalRun run = s.lastRun().get();
         boolean decayed = run.outcome().nucleusDecayed();
         return "Random draw u = " + Formatting.fixed(run.draw(), 4)
-                + (decayed ? " < " : " ≥ ")
-                + "P(decayed) = " + Formatting.fixed(run.decayProbability(), 4)
-                + "  →  nucleus " + (decayed ? "decayed" : "intact");
+            + (decayed ? " < " : " ≥ ")
+            + "P(decayed) = " + Formatting.fixed(run.decayProbability(), 4)
+            + "  →  nucleus " + (decayed ? "decayed" : "intact");
     }
 
-    /** The full experiment record as JSON. */
+    /**
+     * The full experiment record as JSON.
+     */
     public String exportJson() {
         return ExperimentExporter.toJson(requireExperiment());
     }

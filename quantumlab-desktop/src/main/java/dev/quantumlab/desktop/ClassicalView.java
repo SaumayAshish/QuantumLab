@@ -18,6 +18,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -39,6 +40,7 @@ public final class ClassicalView {
     private static final String DEFAULT_RATE = "0.693147"; // ln 2, so the half-life is 1
     private static final String DEFAULT_TIME = "1";
     private static final String DEFAULT_SEED = "12345";
+    private static final int CHART_POINTS = 300;
 
     private final ClassicalPresenter presenter = new ClassicalPresenter();
     private final Worker worker = new Worker("quantumlab-classical-worker");
@@ -65,6 +67,7 @@ public final class ClassicalView {
     private final Label verdictOut = new Label();
     private final TableView<ResultsView.Row> table = new TableView<>();
     private final Label statusOut = new Label();
+    private final ChartsPane charts = new ChartsPane();
 
     public ClassicalView() {
         root.setLeft(buildInputPane());
@@ -164,9 +167,13 @@ public final class ClassicalView {
                 runsOut,
                 table,
                 verdictOut,
+                charts.node(),
                 new ExplanationPane(ExplanationText.forClassicalScreen()).node());
         box.setPadding(new Insets(16));
-        return box;
+
+        ScrollPane scroll = new ScrollPane(box);
+        scroll.setFitToWidth(true);
+        return scroll;
     }
 
     private Node buildFooter() {
@@ -188,9 +195,10 @@ public final class ClassicalView {
                 ResultsView results = presenter.results();
                 ClassicalPresenter.ApparatusView apparatus = presenter.apparatus();
                 String draw = presenter.lastDraw();
+                ChartData chart = presenter.chartData(CHART_POINTS);
                 return () -> {
                     showSetup(setup);
-                    showResults(results);
+                    showResults(results, chart);
                     showApparatus(apparatus, draw);
                     setStatus("Experiment prepared. Seed " + request.seed().trim() + ".", false);
                 };
@@ -203,9 +211,10 @@ public final class ClassicalView {
                 ClassicalPresenter.ApparatusView apparatus = presenter.runOnce();
                 String draw = presenter.lastDraw();
                 ResultsView results = presenter.results();
+                ChartData chart = presenter.chartData(CHART_POINTS);
                 return () -> {
                     showApparatus(apparatus, draw);
-                    showResults(results);
+                    showResults(results, chart);
                     setStatus("One run; " + results.trials() + " in total.", false);
                 };
             });
@@ -218,9 +227,10 @@ public final class ClassicalView {
                 ResultsView results = presenter.run(count);
                 ClassicalPresenter.ApparatusView apparatus = presenter.apparatus();
                 String draw = presenter.lastDraw();
+                ChartData chart = presenter.chartData(CHART_POINTS);
                 return () -> {
                     showApparatus(apparatus, draw);
-                    showResults(results);
+                    showResults(results, chart);
                     setStatus("Ran the experiment; " + results.trials() + " runs in total.", false);
                 };
             });
@@ -232,9 +242,10 @@ public final class ClassicalView {
                 ResultsView results = presenter.reset();
                 ClassicalPresenter.ApparatusView apparatus = presenter.apparatus();
                 String draw = presenter.lastDraw();
+                ChartData chart = presenter.chartData(CHART_POINTS);
                 return () -> {
                     showApparatus(apparatus, draw);
-                    showResults(results);
+                    showResults(results, chart);
                     setStatus("Runs cleared; the generator is back at its seed.", false);
                 };
             });
@@ -287,13 +298,14 @@ public final class ClassicalView {
         drawOut.setText(draw);
     }
 
-    private void showResults(ResultsView r) {
+    private void showResults(ResultsView r, ChartData chart) {
         runsOut.setText(
             r.trials() == 0
                 ? "No runs yet."
                 : r.trials() + " runs (" + r.remaining() + " more allowed).");
         table.getItems().setAll(r.rows());
         verdictOut.setText(r.trials() == 0 ? "" : r.verdict());
+        charts.show(chart);
     }
 
     private void setStatus(String message, boolean error) {
