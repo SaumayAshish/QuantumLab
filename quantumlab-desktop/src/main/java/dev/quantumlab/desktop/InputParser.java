@@ -23,8 +23,13 @@ final class InputParser {
             throw new InvalidInputException(field + " is empty.");
         }
         if (!DECIMAL.matcher(t).matches()) {
+            // The hint must suit whole-number fields too (grid points, levels), which are read
+            // with this method and then checked for a whole value.
             throw new InvalidInputException(
-                    field + " is not a number: \"" + t + "\" (use a decimal point, e.g. 0.5).");
+                field
+                    + " is not a number: \""
+                    + t
+                    + "\" (digits only, with a decimal point if needed, e.g. 12 or 0.5).");
         }
         double v = Double.parseDouble(t);
         if (!Double.isFinite(v)) {
@@ -57,7 +62,7 @@ final class InputParser {
         }
         if (!t.matches("\\d+")) {
             throw new InvalidInputException(
-                    "Number of trials must be a positive whole number, got \"" + t + "\".");
+                "Number of trials must be a positive whole number, got \"" + t + "\".");
         }
         if (t.length() > 9) { // longer than MAX_TRIALS and could overflow
             throw new InvalidInputException(tooMany());

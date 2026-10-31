@@ -1,6 +1,7 @@
 package dev.quantumlab.desktop;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -26,7 +27,7 @@ class InputParserTest {
     @DisplayName("anything that is not a plain finite decimal is rejected")
     void numberRejects() {
         String[] bad = {
-                "", "   ", "abc", "NaN", "Infinity", "-Infinity", "0x1p3", "1d", "1f", "1,5", "1 2", "--1", "1e", "."
+            "", "   ", "abc", "NaN", "Infinity", "-Infinity", "0x1p3", "1d", "1f", "1,5", "1 2", "--1", "1e", "."
         };
         for (String s : bad) {
             assertThrows(InvalidInputException.class, () -> InputParser.number(s, "x"), "should reject \"" + s + "\"");
@@ -44,9 +45,21 @@ class InputParserTest {
     @DisplayName("error messages name the field that is wrong")
     void messageNamesField() {
         InvalidInputException e =
-                assertThrows(InvalidInputException.class, () -> InputParser.number("oops", "β (real part)"));
+            assertThrows(InvalidInputException.class, () -> InputParser.number("oops", "β (real part)"));
         assertTrue(e.getMessage().contains("β (real part)"));
         assertTrue(e.getMessage().contains("oops"));
+    }
+
+    @Test
+    @DisplayName("the not-a-number hint suits whole-number fields too, not only decimals")
+    void notANumberHintSuitsWholeNumberFields() {
+        InvalidInputException e =
+            assertThrows(InvalidInputException.class, () -> InputParser.number("abc", "Grid points"));
+        String message = e.getMessage();
+        assertTrue(message.contains("Grid points"), message);
+        assertTrue(message.contains("abc"), message);
+        assertTrue(message.contains("e.g. 12 or 0.5"), message);
+        assertFalse(message.contains("use a decimal point"), message);
     }
 
     @Test
@@ -79,8 +92,8 @@ class InputParserTest {
         assertEquals(MeasurementSession.MAX_TRIALS, InputParser.trialCount(Integer.toString(MeasurementSession.MAX_TRIALS)));
 
         String[] bad = {
-                "", "0", "-5", "1.5", "ten", "1e3",
-                Integer.toString(MeasurementSession.MAX_TRIALS + 1), "99999999999999999999"
+            "", "0", "-5", "1.5", "ten", "1e3",
+            Integer.toString(MeasurementSession.MAX_TRIALS + 1), "99999999999999999999"
         };
         for (String s : bad) {
             assertThrows(InvalidInputException.class, () -> InputParser.trialCount(s), "should reject \"" + s + "\"");
