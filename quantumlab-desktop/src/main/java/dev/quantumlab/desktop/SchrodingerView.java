@@ -91,8 +91,11 @@ public final class SchrodingerView {
                     return null; // the box is not editable
                 }
             });
-        potential.valueProperty().addListener((obs, old, kind) -> applyDefaults(kind));
+        applyDefaults(SchrodingerPresenter.PotentialKind.INFINITE_WELL);
         potential.setValue(SchrodingerPresenter.PotentialKind.INFINITE_WELL);
+        // Attached only after the first value is set, so that only a change made by the user
+        // re-solves; the constructor solves once, at the end.
+        potential.valueProperty().addListener((obs, old, kind) -> onPotentialChanged(kind));
 
         table.getSelectionModel()
             .selectedIndexProperty()
@@ -204,6 +207,18 @@ public final class SchrodingerView {
     }
 
     // ---------------------------------------------------------------- actions
+
+    /**
+     * The user picked another potential: load its typical settings and solve at once, so that the
+     * table, the setup panel and the charts always describe the potential shown in the box.
+     */
+    private void onPotentialChanged(SchrodingerPresenter.PotentialKind kind) {
+        if (kind == null) {
+            return;
+        }
+        applyDefaults(kind);
+        onSolve();
+    }
 
     private void onSolve() {
         SchrodingerPresenter.Request request =
