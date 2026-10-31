@@ -39,10 +39,6 @@ public final class ClassicalView {
     private static final String DEFAULT_RATE = "0.693147"; // ln 2, so the half-life is 1
     private static final String DEFAULT_TIME = "1";
     private static final String DEFAULT_SEED = "12345";
-    private static final String SCOPE_NOTE =
-        "Every link in the chain has a definite state at every moment. The randomness is"
-            + " ignorance of when the nucleus decays, not a superposition: this screen never"
-            + " shows a cat that is both alive and dead.";
 
     private final ClassicalPresenter presenter = new ClassicalPresenter();
     private final Worker worker = new Worker("quantumlab-classical-worker");
@@ -174,7 +170,7 @@ public final class ClassicalView {
     }
 
     private Node buildFooter() {
-        Label scope = new Label(SCOPE_NOTE);
+        Label scope = new Label(ScopeNote.forClassicalScreen());
         scope.setWrapText(true);
         VBox box = new VBox(4, statusOut, scope);
         box.setPadding(new Insets(8, 16, 12, 16));

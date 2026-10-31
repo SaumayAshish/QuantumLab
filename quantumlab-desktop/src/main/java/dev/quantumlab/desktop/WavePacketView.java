@@ -37,11 +37,6 @@ import javafx.util.Duration;
  */
 public final class WavePacketView {
 
-    private static final String SCOPE_NOTE =
-        "A single particle in one dimension, solved numerically. The animation shows the"
-            + " probability density |ψ|², not a path. Nothing is measured and no collapse is"
-            + " shown. It is a separate model from the cat experiment.";
-
     private static final double FRAME_MILLIS = 40.0;
 
     private final WavePacketPresenter presenter = new WavePacketPresenter();
@@ -240,7 +235,7 @@ public final class WavePacketView {
     }
 
     private Node buildFooter() {
-        Label scope = new Label(SCOPE_NOTE);
+        Label scope = new Label(ScopeNote.forWavePacketScreen());
         scope.setWrapText(true);
         VBox box = new VBox(4, statusOut, scope);
         box.setPadding(new Insets(8, 16, 12, 16));

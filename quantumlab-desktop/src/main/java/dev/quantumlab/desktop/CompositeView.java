@@ -33,12 +33,6 @@ import javafx.util.StringConverter;
  */
 public final class CompositeView {
 
-    private static final String SCOPE_NOTE =
-        "Exact probabilities for two two-level systems. The detector is a two-level stand-in,"
-            + " not a model of a real detector. Nothing evolves in time, nothing is sampled"
-            + " or collapses, and it is a separate model from the cat: it does not describe"
-            + " a cat.";
-
     private final CompositePresenter presenter = new CompositePresenter();
     private final Worker worker = new Worker("quantumlab-composite-worker");
 
@@ -215,7 +209,7 @@ public final class CompositeView {
     }
 
     private Node buildFooter() {
-        Label scope = new Label(SCOPE_NOTE);
+        Label scope = new Label(ScopeNote.forCompositeScreen());
         scope.setWrapText(true);
         VBox box = new VBox(4, statusOut, scope);
         box.setPadding(new Insets(8, 16, 12, 16));

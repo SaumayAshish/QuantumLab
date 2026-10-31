@@ -46,10 +46,6 @@ public final class MeasurementView {
     private static final int HISTORY_LINES = 200;
     private static final int CHART_POINTS = 300;
     private static final String DEFAULT_SEED = "12345";
-    private static final String SCOPE_NOTE =
-        "Each trial prepares a fresh copy of the state and measures it once, sampling the Born"
-            + " rule. This models measurement statistics; it does not explain the"
-            + " measurement problem, and consciousness plays no role.";
 
     private record Preset(String label, QubitState state) {
     }
@@ -229,7 +225,7 @@ public final class MeasurementView {
     }
 
     private Node buildFooter() {
-        Label scope = new Label(SCOPE_NOTE);
+        Label scope = new Label(ScopeNote.forMeasurementScreen());
         scope.setWrapText(true);
         VBox box = new VBox(4, statusOut, scope);
         box.setPadding(new Insets(8, 16, 12, 16));

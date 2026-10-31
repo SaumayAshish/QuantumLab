@@ -33,11 +33,6 @@ import javafx.util.StringConverter;
  */
 public final class ConvergenceView {
 
-    private static final String SCOPE_NOTE =
-        "This measures the numerical error of one energy level against its exact value. It does"
-            + " not describe any physical process: nothing moves in time and nothing is"
-            + " measured.";
-
     private final ConvergencePresenter presenter = new ConvergencePresenter();
     private final Worker worker = new Worker("quantumlab-convergence-worker");
 
@@ -183,7 +178,7 @@ public final class ConvergenceView {
     }
 
     private Node buildFooter() {
-        Label scope = new Label(SCOPE_NOTE);
+        Label scope = new Label(ScopeNote.forMeasurementScreen());
         scope.setWrapText(true);
         VBox box = new VBox(4, statusOut, scope);
         box.setPadding(new Insets(8, 16, 12, 16));

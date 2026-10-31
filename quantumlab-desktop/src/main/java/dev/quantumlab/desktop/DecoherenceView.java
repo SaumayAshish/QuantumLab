@@ -33,12 +33,6 @@ import javafx.util.StringConverter;
  */
 public final class DecoherenceView {
 
-    private static final String SCOPE_NOTE =
-        "Exact probabilities for one two-level system with an assumed dephasing rate. The rate"
-            + " is an input, not derived from a real environment. Nothing is sampled, no"
-            + " single outcome or collapse is shown, and it is a separate model from the"
-            + " cat: it does not describe a cat.";
-
     private static final String CHART_COLOURS =
         "CHART_COLOR_1: #1f6fb4; CHART_COLOR_2: #e8590c; CHART_COLOR_3: #2a9d4b;";
 
@@ -230,7 +224,7 @@ public final class DecoherenceView {
     }
 
     private Node buildFooter() {
-        Label scope = new Label(SCOPE_NOTE);
+        Label scope = new Label(ScopeNote.forDecoherenceScreen());
         scope.setWrapText(true);
         VBox box = new VBox(4, statusOut, scope);
         box.setPadding(new Insets(8, 16, 12, 16));

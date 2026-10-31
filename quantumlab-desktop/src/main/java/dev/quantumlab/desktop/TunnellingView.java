@@ -33,11 +33,6 @@ import javafx.util.StringConverter;
  */
 public final class TunnellingView {
 
-    private static final String SCOPE_NOTE =
-        "Stationary transmission probabilities for waves of one definite energy. Nothing moves"
-            + " in time, no wave packet is shown, nothing is measured, and no particle is"
-            + " followed. It is a separate model from the cat experiment.";
-
     private final TunnellingPresenter presenter = new TunnellingPresenter();
     private final Worker worker = new Worker("quantumlab-tunnelling-worker");
 
@@ -213,7 +208,7 @@ public final class TunnellingView {
     }
 
     private Node buildFooter() {
-        Label scope = new Label(SCOPE_NOTE);
+        Label scope = new Label(ScopeNote.forTunnellingScreen());
         scope.setWrapText(true);
         VBox box = new VBox(4, statusOut, scope);
         box.setPadding(new Insets(8, 16, 12, 16));

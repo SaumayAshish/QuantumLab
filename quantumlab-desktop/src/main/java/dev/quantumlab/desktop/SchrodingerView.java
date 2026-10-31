@@ -35,11 +35,6 @@ import javafx.util.StringConverter;
  */
 public final class SchrodingerView {
 
-    private static final String SCOPE_NOTE =
-        "Stationary states only: nothing moves in time and nothing is measured on this screen."
-            + " It is a separate model from the cat experiment and does not describe the"
-            + " nucleus.";
-
     private final SchrodingerPresenter presenter = new SchrodingerPresenter();
     private final Worker worker = new Worker("quantumlab-schrodinger-worker");
 
@@ -201,7 +196,7 @@ public final class SchrodingerView {
     }
 
     private Node buildFooter() {
-        Label scope = new Label(SCOPE_NOTE);
+        Label scope = new Label(ScopeNote.forSchrodingerScreen());
         scope.setWrapText(true);
         VBox box = new VBox(4, statusOut, scope);
         box.setPadding(new Insets(8, 16, 12, 16));
