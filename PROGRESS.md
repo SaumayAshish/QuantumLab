@@ -19,7 +19,7 @@ here is claimed as working unless it was run.
 ## Last verified run
 
 - Date: 2026-10-31.
-- Command: `mvn test` from the repository root, on the code of commit HASH.
+- Command: `mvn test` from the repository root, on the code of commit ddb9337.
 - Environment: Windows, Microsoft OpenJDK 25.0.5, Maven 3.9.16, JavaFX 25.0.1.
 - Result: BUILD SUCCESS, 539 tests (math 71, physics 193, simulation 107, desktop 168), no failures.
 - `mvn install -DskipTests` also succeeded in the same session.
