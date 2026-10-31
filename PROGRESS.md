@@ -12,16 +12,16 @@ here is claimed as working unless it was run.
 | 2     | First working cat laboratory with desktop UI (modes A, B, C)                    | Screens, README, ADRs and a CI definition done; the CI workflow has not run                                                                                                                                                                                                                                                                                                                    |
 | 3     | Finite-difference 1D Schrödinger solver                                         | Done: solver, convergence study and two screens (Quantum well, Convergence)                                                                                                                                                                                                                                                                                                                    |
 | 4     | Barriers, tunnelling, wave packet, composite systems, decoherence               | Done: stationary tunnelling through one or two barriers (Tunnelling screen), time-dependent wave packet (Crank–Nicolson), two-qubit composite system with CHSH (Composite system screen), and dephasing of a single qubit (Decoherence screen)                                                                                                                                                 |
-| 5     | Desktop polish                                                                  | In progress. Done: tables sized to their rows, logarithmic trial axis, distinct series colours, untruncated titles, one shared worker and table-column helper for all screens, footer scope notes taken from the explanation catalogue, re-solve when the potential is switched. Remaining: charts for the classical screen, a screen for the interference curve, the grid-point error wording |
+| 5     | Desktop polish                                                                  | In progress. Done: tables sized to their rows, logarithmic trial axis, distinct series colours, untruncated titles, one shared worker and table-column helper for all screens, footer scope notes taken from the explanation catalogue, re-solve when the potential is switched. Remaining: charts for the classical screen, a screen for the interference curve |
 | 6     | Optional Spring Boot service                                                    | Not started                                                                                                                                                                                                                                                                                                                                                                                    |
 | 7     | Release quality                                                                 | Not started                                                                                                                                                                                                                                                                                                                                                                                    |
 
 ## Last verified run
 
 - Date: 2026-10-31.
-- Command: `mvn test` from the repository root, on the code of commit e68cebf.
+- Command: `mvn test` from the repository root, on the code of commit 55b81ea.
 - Environment: Windows, Microsoft OpenJDK 25.0.5, Maven 3.9.16, JavaFX 25.0.1.
-- Result: BUILD SUCCESS, 530 tests (math 71, physics 193, simulation 107, desktop 159), no failures.
+- Result: BUILD SUCCESS,531 tests (math 71, physics 193, simulation 107, desktop 160), no failures.
 - `mvn install -DskipTests` also succeeded in the same session.
 - The application starts with eight tabs.
 - Checked by hand after the shared-worker and scope-note changes: the scope note in the footer of
@@ -58,5 +58,4 @@ here is claimed as working unless it was run.
 - On small windows the measurement results table can be squeezed; a minimum height is planned.
 - The classical screen has no charts yet.
 - The interference curve exists in the simulation module but has no screen.
-- The grid-point error message says "use a decimal point, e.g. 0.5", which is wrong for whole numbers.
 - The Tunnelling table layout may need the same fix as the other tables; this has not been confirmed.
