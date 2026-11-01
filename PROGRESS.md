@@ -14,7 +14,7 @@ here is claimed as working unless it was run.
 | 4     | Barriers, tunnelling, wave packet, composite systems, decoherence               | Done: stationary tunnelling through one or two barriers (Tunnelling screen), time-dependent wave packet (Crank–Nicolson), two-qubit composite system with CHSH (Composite system screen), and dephasing of a single qubit (Decoherence screen)                                                                                                                                              |
 | 5     | Desktop polish                                                                  | Done, apart from the small items under Known issues: tables sized to their rows, logarithmic trial axis, distinct series colours, untruncated titles, one shared worker and table-column helper for all screens, footer scope notes taken from the explanation catalogue, re-solve when the potential is switched, charts for the classical screen, and a screen for the interference curve |
 | 6     | Optional Spring Boot service                                                    | Not started                                                                                                                                                                                                                                                                                                                                                                                 |
-| 7     | Release quality                                                                 |In progress. Done: line-ending policy (`.gitattributes`), independent NumPy checks in `docs/validation/`, code pushed to GitHub, first CI run passed. Remaining: a Windows CI run, then a final review of the docs                                                                                                                                                                     |
+| 7     | Release quality                                                                 |   Done: line-ending policy (`.gitattributes`), independent NumPy checks in `docs/validation/`, code pushed to GitHub, CI passing on Ubuntu and Windows, docs reviewed against the code. Open items are the hand checks and polish lists below                                                                                                                                                                |
 
 ## Last verified run
 
@@ -64,7 +64,7 @@ here is claimed as working unless it was run.
   covered by automated tests), and export from the Classical tab has not been run by hand.
 - Reset followed by the same batch reproducing identical counts has been checked in tests, not yet
   by hand in the window.
-- CI has run once, on Ubuntu with Temurin 25 (build #1, commit 0764178, passed). It has not run on Windows or with the Microsoft JDK build used locally.
+- CI passes on Ubuntu and on Windows with Temurin 25 (builds #2 and #3). It has not run with the Microsoft JDK build used locally.
 - The independent NumPy checks cover the infinite well, a single rectangular barrier and pure
   dephasing only. The convergence study, the wave packet, the composite system and CHSH have no
   independent script yet.
@@ -72,7 +72,6 @@ here is claimed as working unless it was run.
 
 ## Known issues and polish
 
-- CI passes on Ubuntu and on Windows with Temurin 25 (builds #2 and #3). It has not run with the Microsoft JDK build used locally.
 - On small windows the measurement results table can be squeezed; a minimum height is planned.
 - After Reset runs on the Classical tab, the empty running-frequency chart keeps the trial axis of
   the previous batch.
