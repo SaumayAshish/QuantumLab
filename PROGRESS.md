@@ -72,6 +72,7 @@ here is claimed as working unless it was run.
 
 ## Known issues and polish
 
+- CI passes on Ubuntu and on Windows with Temurin 25 (builds #2 and #3). It has not run with the Microsoft JDK build used locally.
 - On small windows the measurement results table can be squeezed; a minimum height is planned.
 - After Reset runs on the Classical tab, the empty running-frequency chart keeps the trial axis of
   the previous batch.
