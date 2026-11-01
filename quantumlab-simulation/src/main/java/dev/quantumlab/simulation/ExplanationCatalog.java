@@ -303,6 +303,46 @@ public final class ExplanationCatalog {
     }
 
     /**
+     * The interference curve: probability against the relative phase of one qubit.
+     */
+    public static ModeExplanation interference() {
+        return new ModeExplanation(
+            "Interference — how the relative phase changes the statistics",
+            "A qubit is prepared with fixed chances of \"not decayed\" and \"decayed\" and a relative "
+                + "phase φ between its two amplitudes that is swept through a full turn. This screen "
+                + "plots the Born probability of an outcome against φ in the chosen basis and "
+                + "compares it with the classical mixture that has the same chances in the Z basis.",
+            "|ψ(φ)⟩ = |α||0⟩ + e^{iφ}|β||1⟩,  |α|² = P(not decayed), |β|² = 1 − |α|².\n"
+                + "Z basis: p = (|α|², |β|²) for every φ.\n"
+                + "X basis: P(+) = (1 + 2|α||β| cos φ)/2.\n"
+                + "Y basis: P(+i) = (1 + 2|α||β| sin φ)/2.\n"
+                + "Classical mixture ρ = |α|²|0⟩⟨0| + |β|²|1⟩⟨1|: P(k) = ⟨bₖ|ρ|bₖ⟩, which does not "
+                + "depend on φ and equals ½ in the X and Y bases.\n"
+                + "Fringe height = largest minus smallest probability over φ: 2|α||β| in the X and "
+                + "Y bases, 0 in the Z basis.",
+            List.of(
+                "How the relative phase between two amplitudes, which Z-basis statistics cannot "
+                    + "show, changes the probabilities in the X and Y bases: interference.",
+                "The difference between a coherent superposition and a classical mixture with the "
+                    + "same chances of \"not decayed\" and \"decayed\": the mixture gives the same "
+                    + "answer for every phase.",
+                "The height of the fringe, 2|α||β|: largest for equal chances and zero for a "
+                    + "state that is purely \"not decayed\" or purely \"decayed\"."),
+            List.of(
+                "The phase is a free input swept through a full turn, not derived from any "
+                    + "physics of the nucleus: no physical process sets or changes it here.",
+                "Nothing is sampled, measured or collapsed: every point is an exact Born-rule "
+                    + "probability, and no single outcome is shown.",
+                "Nothing evolves in time: the loss of the fringe through dephasing is on the "
+                    + "decoherence screen, not here.",
+                "Not the cat: no macroscopic cat is modelled and a cat is not treated as a "
+                    + "qubit. This is a two-level model of the nucleus only.",
+                "The classical mixture is a density-matrix calculation, not a simulation of an "
+                    + "apparatus: it does not say whether or how a real superposition becomes a "
+                    + "mixture."));
+    }
+
+    /**
      * Caveats that apply to the whole application.
      */
     public static ModeExplanation general() {
@@ -330,7 +370,10 @@ public final class ExplanationCatalog {
                     + "a classical mixture, compared by joint measurement statistics "
                     + "and the CHSH quantity.",
                 "One qubit losing its coherence at an assumed dephasing rate, and what that "
-                    + "does to its statistics, its interference fringe and its purity."),
+                    + "does to its statistics, its interference fringe and its purity.",
+                "One qubit with a chosen relative phase between its amplitudes, and how its "
+                    + "probabilities in each basis change with that phase, compared with a "
+                    + "classical mixture."),
             List.of(
                 "QuantumLab does not simulate a macroscopic cat and does not solve the "
                     + "quantum measurement problem.",
@@ -343,8 +386,11 @@ public final class ExplanationCatalog {
                 "The composite-system screen is a separate two-qubit model: its detector "
                     + "is a two-level stand-in and it does not describe the cat or a "
                     + "real apparatus.",
-                "The decoherence screen is a separate single-qubit model with an assumed "
+                               "The decoherence screen is a separate single-qubit model with an assumed "
                     + "dephasing rate: it does not describe the cat, a real environment "
-                    + "or the appearance of a single outcome."));
+                    + "or the appearance of a single outcome.",
+                "The interference screen is a separate single-qubit model with a free phase: "
+                    + "it does not describe the cat, a real apparatus or any process that "
+                    + "sets the phase."));
     }
 }

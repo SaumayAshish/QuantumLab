@@ -14,6 +14,7 @@ public final class QuantumLabApp extends Application {
 
     private ClassicalView classical;
     private MeasurementView measurement;
+    private InterferenceView interference;
     private SchrodingerView schrodinger;
     private ConvergenceView convergence;
     private TunnellingView tunnelling;
@@ -25,6 +26,7 @@ public final class QuantumLabApp extends Application {
     public void start(Stage stage) {
         classical = new ClassicalView();
         measurement = new MeasurementView();
+        interference = new InterferenceView();
         schrodinger = new SchrodingerView();
         convergence = new ConvergenceView();
         tunnelling = new TunnellingView();
@@ -36,6 +38,8 @@ public final class QuantumLabApp extends Application {
         modeA.setClosable(false);
         Tab modeBC = new Tab("B/C · Superposition and measurement", measurement.root());
         modeBC.setClosable(false);
+        Tab fringe = new Tab("Interference", interference.root());
+        fringe.setClosable(false);
         Tab well = new Tab("Quantum well (1D)", schrodinger.root());
         well.setClosable(false);
         Tab conv = new Tab("Convergence", convergence.root());
@@ -50,7 +54,11 @@ public final class QuantumLabApp extends Application {
         modeE.setClosable(false);
 
         stage.setTitle(QuantumLabInfo.NAME + " " + QuantumLabInfo.VERSION);
-        stage.setScene(new Scene(new TabPane(modeA, modeBC, well, conv, tunnel, packet, modeD, modeE), 1100, 760));
+        stage.setScene(
+            new Scene(
+                new TabPane(modeA, modeBC, fringe, well, conv, tunnel, packet, modeD, modeE),
+                1100,
+                760));
         stage.show();
     }
 
@@ -61,6 +69,9 @@ public final class QuantumLabApp extends Application {
         }
         if (measurement != null) {
             measurement.shutdown();
+        }
+        if (interference != null) {
+            interference.shutdown();
         }
         if (schrodinger != null) {
             schrodinger.shutdown();

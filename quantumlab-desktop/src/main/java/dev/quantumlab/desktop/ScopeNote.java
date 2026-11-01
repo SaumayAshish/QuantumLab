@@ -49,6 +49,10 @@ public final class ScopeNote {
         return of(ExplanationText.forDecoherenceScreen());
     }
 
+    public static String forInterferenceScreen() {
+        return of(ExplanationText.forInterferenceScreen());
+    }
+
     public static String forClassicalScreen() {
         return of(ExplanationText.forClassicalScreen());
     }

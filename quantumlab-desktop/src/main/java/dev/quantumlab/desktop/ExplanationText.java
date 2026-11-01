@@ -54,6 +54,13 @@ public final class ExplanationText {
     }
 
     /**
+     * The explanations relevant to the interference screen, scope last.
+     */
+    public static List<ModeExplanation> forInterferenceScreen() {
+        return List.of(ExplanationCatalog.interference(), ExplanationCatalog.general());
+    }
+
+    /**
      * The explanations relevant to the classical decay screen, most specific first, scope last.
      */
     public static List<ModeExplanation> forClassicalScreen() {

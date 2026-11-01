@@ -24,6 +24,7 @@ class ExplanationCatalogTest {
             ExplanationCatalog.wavePacket(),
             ExplanationCatalog.composite(),
             ExplanationCatalog.decoherence(),
+            ExplanationCatalog.interference(),
             ExplanationCatalog.general());
     }
 
@@ -78,6 +79,23 @@ class ExplanationCatalogTest {
         assertTrue(anyContains(no, "measurement problem"));
         assertTrue(anyContains(no, "consciousness"));
         assertTrue(anyContains(no, "decoherence screen is a separate single-qubit model"));
+    }
+    @Test
+    @DisplayName("the interference mode says the phase is a free input and nothing is measured")
+    void interferenceCaveats() {
+        List<String> no = ExplanationCatalog.interference().doesNotRepresent();
+        assertTrue(anyContains(no, "free input"));
+        assertTrue(anyContains(no, "Nothing is sampled, measured or collapsed"));
+        assertTrue(anyContains(no, "Not the cat"));
+        assertTrue(anyContains(no, "not a simulation of an apparatus"));
+        assertTrue(anyContains(ExplanationCatalog.interference().represents(), "classical mixture"));
+    }
+
+    @Test
+    @DisplayName("the general scope keeps the interference screen separate from the cat")
+    void generalKeepsInterferenceSeparate() {
+        List<String> no = ExplanationCatalog.general().doesNotRepresent();
+        assertTrue(anyContains(no, "interference screen is a separate single-qubit model"));
     }
 
     @Test

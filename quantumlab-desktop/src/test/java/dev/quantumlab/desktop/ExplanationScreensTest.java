@@ -16,8 +16,29 @@ class ExplanationScreensTest {
     void classicalScreen() {
         List<ModeExplanation> list = ExplanationText.forClassicalScreen();
         assertEquals(
-                List.of(ExplanationCatalog.classical().title(), ExplanationCatalog.general().title()),
-                list.stream().map(ModeExplanation::title).toList());
+            List.of(ExplanationCatalog.classical().title(), ExplanationCatalog.general().title()),
+            list.stream().map(ModeExplanation::title).toList());
+    }
+
+    @Test
+    @DisplayName("the interference screen explains interference first and the overall scope last")
+    void interferenceScreen() {
+        List<ModeExplanation> list = ExplanationText.forInterferenceScreen();
+        assertEquals(
+            List.of(
+                ExplanationCatalog.interference().title(),
+                ExplanationCatalog.general().title()),
+            list.stream().map(ModeExplanation::title).toList());
+    }
+
+    @Test
+    @DisplayName("the interference footer is built from the catalogue's first limitations")
+    void interferenceScopeNote() {
+        String note = ScopeNote.forInterferenceScreen();
+        assertEquals(
+            "Scope: " + ExplanationCatalog.interference().doesNotRepresent().get(0)
+                + " " + ExplanationCatalog.general().doesNotRepresent().get(0),
+            note);
     }
 
     @Test
@@ -32,7 +53,10 @@ class ExplanationScreensTest {
     @DisplayName("every screen's explanations state at least one limitation")
     void everyScreenStatesLimitations() {
         for (List<ModeExplanation> screen :
-                List.of(ExplanationText.forClassicalScreen(), ExplanationText.forMeasurementScreen())) {
+            List.of(
+                ExplanationText.forClassicalScreen(),
+                ExplanationText.forMeasurementScreen(),
+                ExplanationText.forInterferenceScreen())) {
             for (ModeExplanation e : screen) {
                 assertTrue(!e.doesNotRepresent().isEmpty(), "no limitation stated in " + e.title());
             }
