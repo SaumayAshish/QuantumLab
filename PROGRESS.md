@@ -5,16 +5,16 @@ here is claimed as working unless it was run.
 
 ## Phases
 
-| Phase | Scope                                                                           | Status                                                                                                                                                                                                                                                                                                                                                                                         |
-|-------|---------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 0     | Inspect the environment, plan                                                   | Done                                                                                                                                                                                                                                                                                                                                                                                           |
-| 1     | Mathematics: complex linear algebra, qubit, Born rule, measurement, decay model | Done                                                                                                                                                                                                                                                                                                                                                                                           |
-| 2     | First working cat laboratory with desktop UI (modes A, B, C)                    | Screens, README, ADRs and a CI definition done; the CI workflow has not run                                                                                                                                                                                                                                                                                                                    |
-| 3     | Finite-difference 1D Schrödinger solver                                         | Done: solver, convergence study and two screens (Quantum well, Convergence)                                                                                                                                                                                                                                                                                                                    |
-| 4     | Barriers, tunnelling, wave packet, composite systems, decoherence               | Done: stationary tunnelling through one or two barriers (Tunnelling screen), time-dependent wave packet (Crank–Nicolson), two-qubit composite system with CHSH (Composite system screen), and dephasing of a single qubit (Decoherence screen)                                                                                                                                                 |
+| Phase | Scope                                                                           | Status                                                                                                                                                                                                                                                                                                                                                                                      |
+|-------|---------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 0     | Inspect the environment, plan                                                   | Done                                                                                                                                                                                                                                                                                                                                                                                        |
+| 1     | Mathematics: complex linear algebra, qubit, Born rule, measurement, decay model | Done                                                                                                                                                                                                                                                                                                                                                                                        |
+| 2     | First working cat laboratory with desktop UI (modes A, B, C)                    | Screens, README, ADRs and a CI definition done; the CI workflow has not run                                                                                                                                                                                                                                                                                                                 |
+| 3     | Finite-difference 1D Schrödinger solver                                         | Done: solver, convergence study and two screens (Quantum well, Convergence)                                                                                                                                                                                                                                                                                                                 |
+| 4     | Barriers, tunnelling, wave packet, composite systems, decoherence               | Done: stationary tunnelling through one or two barriers (Tunnelling screen), time-dependent wave packet (Crank–Nicolson), two-qubit composite system with CHSH (Composite system screen), and dephasing of a single qubit (Decoherence screen)                                                                                                                                              |
 | 5     | Desktop polish                                                                  | Done, apart from the small items under Known issues: tables sized to their rows, logarithmic trial axis, distinct series colours, untruncated titles, one shared worker and table-column helper for all screens, footer scope notes taken from the explanation catalogue, re-solve when the potential is switched, charts for the classical screen, and a screen for the interference curve |
-| 6     | Optional Spring Boot service                                                    | Not started                                                                                                                                                                                                                                                                                                                                                                                    |
-| 7     | Release quality                                                                 | Not started                                                                                                                                                                                                                                                                                                                                                                                    |
+| 6     | Optional Spring Boot service                                                    | Not started                                                                                                                                                                                                                                                                                                                                                                                 |
+| 7     | Release quality                                                                 | In progress. Done: line-ending policy (`.gitattributes`), independent NumPy checks in `docs/validation/`, code pushed to GitHub. Remaining: the first CI run has to be read and fixed, then a final review of the docs                                                                                                                                                                      |
 
 ## Last verified run
 
@@ -28,7 +28,7 @@ here is claimed as working unless it was run.
   each tab; buttons greying out while a computation runs and coming back; an invalid input showing
   the red message and keeping the previous result; Export JSON on the Superposition tab reporting
   the file it wrote.
-- Interference tab checked by hand: the default (P(not decayed) = 0.5, X basis: a full cosine
+- Interference tab checked by hand: the default (P (not decayed) = 0.5, X basis: a full cosine
   fringe, 100 % / 50 % / 0 % at 0° / 90° / 180°, flat 50 % classical mixture), P = 0.1 (fringe
   height 0.6000, equal to the closed form 2|α||β|), P = 1 (no fringe, stated in the verdict) and
   an invalid input (`abc`: red message, previous result kept).
@@ -36,6 +36,10 @@ here is claimed as working unless it was run.
   empty running-frequency chart), 1000 runs (bars and curve agree with the table, the curve settles
   on the Theory line), Reset runs (both charts empty, no NaN), an invalid seed (red message, charts
   kept), and a changed law (λ = 1, t = 2: the Theory bars move to 86.47 % and 13.53 %).
+- Independent NumPy checks (`docs/validation/`) run on 2026-11-01 with Python 3.12 and NumPy 1.26.4:
+  `infinite_well.py` 18 of 18, `barrier_transmission.py` 12 of 12, `dephasing.py` 34 of 34
+  comparisons agree. They compare independent calculations with the values and claims in the Java
+  tests; they do not run the Java classes.
 - Decoherence tab exercised by hand: defaults in the X basis, the Z basis (statistics unchanged),
   strong dephasing (γ = 10, t = 1), and an invalid rate (−1).
 - Composite system tab exercised by hand: default Z/Z, X/X, Y/Y, a rounded phase of 1.5708, an
@@ -62,8 +66,10 @@ here is claimed as working unless it was run.
   by hand in the window.
 - The CI workflow in `.github/workflows/ci.yml` is written but has never run. It uses Temurin 25,
   not the Microsoft build used locally.
-- The numerical code was cross-checked against independent NumPy calculations during development,
-  but those scripts are not part of the repository.
+- The independent NumPy checks cover the infinite well, a single rectangular barrier and pure
+  dephasing only. The convergence study, the wave packet, the composite system and CHSH have no
+  independent script yet.
+
 
 ## Known issues and polish
 
