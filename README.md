@@ -25,6 +25,15 @@ screen shows the observed frequencies, the theoretical probabilities, standard e
 deviation in σ, an observed-versus-theory chart, the convergence of the running frequency on a
 logarithmic trial axis, and the trial history.
 
+**Interference.** Fix the chances of "not decayed" and "decayed", sweep the relative phase φ
+between the two amplitudes through a full turn, and see the Born probability of an outcome in the
+Z, X or Y basis. In the Z basis the probability does not depend on φ; in the X and Y bases it
+oscillates with a fringe of height 2|α||β|. The curve is drawn next to the classical mixture that
+has the same Z-basis chances, which stays flat in every basis, so the screen shows what separates
+a coherent superposition from a mixture. A table gives both outcomes at φ = 0°, 90° and 180°. Every
+point is an exact Born-rule probability, not a sample; the phase is a free input, not derived from
+any physics of the nucleus.
+
 **Composite system (mode D).** A nucleus and an idealised detector as one two-qubit state
 α|00⟩ + β|11⟩, compared with the classical mixture that has the same Z-basis chances. Choose a
 measurement basis (Z, X or Y) for each qubit and a relative phase, and see the joint outcome
@@ -89,15 +98,13 @@ nothing is measured.
   Z, X and Y bases, an exponential decay model, the classical apparatus chain, the finite-difference
   Schrödinger solver, barrier scattering, Crank–Nicolson time evolution, and two-qubit states with
   entanglement measures and CHSH, and single-qubit density matrices with pure dephasing.
-- `quantumlab-simulation`: experiment sessions, outcome logs, statistics, JSON/CSV export, and the
-  explanation catalogue. It also contains a phase-dependence (interference) curve for a qubit,
-  which has no screen yet.
+- `quantumlab-simulation`: experiment sessions, outcome logs, statistics, JSON/CSV export, the
+  phase-dependence (interference) curve for a qubit, and the explanation catalogue.
 
 ## Planned
 
 Not implemented yet:
 
-- A screen for the phase-dependence (interference) curve.
 - An optional Spring Boot service.
 
 ## Scientific scope
@@ -109,8 +116,9 @@ vector of complex amplitudes and nothing more. The CHSH numbers on the composite
 quantum-mechanical predictions for the chosen state and settings; the application does not run or
 simulate a loophole-free Bell experiment. The decoherence screen dephases one qubit at an assumed
 rate; it does not model a real environment and does not explain why a single outcome is observed.
-The in-app explanation panels and the tests that guard their wording are the authoritative
-statement of scope for each screen.
+The interference screen sweeps a phase that is a free input; it does not model any process that
+sets or changes that phase. The in-app explanation panels and the tests that guard their wording
+are the authoritative statement of scope for each screen.
 
 ## Requirements
 
