@@ -20,7 +20,8 @@ dependency direction between mathematics, physics, simulation and the user inter
 
 ## Consequences
 
-- Developed and tested locally on Microsoft OpenJDK 25.0.5 with Maven 3.9.16. Other JDK 25
-  distributions are expected to work but have not been tried locally.
+- Developed and tested locally on Microsoft OpenJDK 25.0.5 with Maven 3.9.16 on Windows. The
+  continuous-integration build also passes on Temurin 25 on Ubuntu. Other JDK 25 distributions have
+  not been tried.
 - Raising the language level later is a one-line change.
 - The physics and simulation code can be reused by a future service without pulling in JavaFX.
