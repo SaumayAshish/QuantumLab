@@ -28,6 +28,7 @@ here is claimed as working unless it was run.
 - The application starts with nine tabs.
 - Service levels endpoint, by hand with `curl.exe`: the infinite well on [0, 1] with 100 points gave 4.934404, 19.732844 and 44.381001 (a dense NumPy diagonalisation gives the same to about 1e-11); the harmonic oscillator with ω = 1 on [−8, 8] with 800 points gave 0.499988, 1.499938 and 2.499838; an unknown potential, a missing ω and 5 grid points each returned HTTP 400; the largest accepted request (20000 points, 20 levels) took 0.17 s.
 - Service over HTTP: `ServiceOverHttpTest` starts the real application on a random port (Tomcat 11.0.27) and passed 4 tests: `/api/status` returns the expected JSON with a JSON content type; `NaN` as a rate returns HTTP 400 with the error message; the measurement endpoint (seed 2026, 20 trials) returns the pinned outcome sequence 10101111000100100011; and text containing ⟩ arrives intact.
+- Quantum well tab compared with the service, by hand: the infinite well (walls 0 and 1, 100 points, 3 levels) showed 4.934404, 19.732844 and 44.381001 with relative errors −0.0081 %, −0.0322 % and −0.0725 %; the oscillator (ω = 1, −8 to 8, 800 points, 6 levels) showed 0.499988, 1.499938 and 2.499838 for the first three levels. All six numbers are the same as the `/api/levels` answers. Oscillator levels n = 3 to 5 (3.499688, 4.499489, 5.499239) were not compared with the service.
 - CI: build #5 (commit 6980152) passed on Ubuntu and Windows (Temurin 25) in 1 min 32 s. It is the first run that includes the service module and `ServiceOverHttpTest`. The per-job test counts were not inspected.
 - Checked by hand after the shared-worker and scope-note changes: the scope note in the footer of
   each tab; buttons greying out while a computation runs and coming back; an invalid input showing
@@ -73,7 +74,6 @@ here is claimed as working unless it was run.
 - The independent NumPy checks cover the infinite well, a single rectangular barrier and pure
   dephasing only. The convergence study, the wave packet, the composite system and CHSH have no
   independent script yet.
-- The `/api/levels` numbers have been compared with NumPy, not by eye with the Quantum well tab.
 
 
 ## Known issues and polish
