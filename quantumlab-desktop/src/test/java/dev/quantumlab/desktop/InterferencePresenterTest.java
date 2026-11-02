@@ -92,9 +92,9 @@ class InterferencePresenterTest {
     @Test
     @DisplayName("the measured fringe height matches 2|a||b| for several chances")
     void heightMatchesTheClosedForm() {
-        for (double p0 : new double[] {0.1, 0.3, 0.5, 0.9}) {
+        for (double p0 : new double[]{0.1, 0.3, 0.5, 0.9}) {
             double expected = 2 * Math.sqrt(p0) * Math.sqrt(1 - p0);
-            for (StandardBasis b : new StandardBasis[] {StandardBasis.HADAMARD, StandardBasis.CIRCULAR}) {
+            for (StandardBasis b : new StandardBasis[]{StandardBasis.HADAMARD, StandardBasis.CIRCULAR}) {
                 InterferencePresenter.Result r = compute(Double.toString(p0), b);
                 assertEquals(expected, Double.parseDouble(r.height()), 1e-4, p0 + " " + b);
                 assertEquals(expected, Double.parseDouble(r.expectedHeight()), 1e-4, p0 + " " + b);
@@ -105,10 +105,22 @@ class InterferencePresenterTest {
     @Test
     @DisplayName("a state that is purely one outcome shows no interference")
     void pureStateHasNoFringe() {
-        for (String p : new String[] {"0", "1"}) {
+        for (String p : new String[]{"0", "1"}) {
             InterferencePresenter.Result r = compute(p, StandardBasis.HADAMARD);
             assertEquals("0.0000", r.height());
-            assertTrue(r.verdict().contains("same for every phase"));
+            assertTrue(r.verdict().contains("purely one outcome"));
+        }
+    }
+
+    @Test
+    @DisplayName("a pure state in the X or Y basis blames the missing phase, not the basis")
+    void pureStateVerdictDoesNotBlameTheBasis() {
+        for (StandardBasis b : new StandardBasis[]{StandardBasis.HADAMARD, StandardBasis.CIRCULAR}) {
+            for (String p : new String[]{"0", "1"}) {
+                String verdict = compute(p, b).verdict();
+                assertTrue(verdict.contains("purely one outcome"), p + " " + b);
+                assertTrue(!verdict.contains("In this basis"), p + " " + b);
+            }
         }
     }
 

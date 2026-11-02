@@ -20,36 +20,42 @@ import java.util.List;
  */
 public final class InterferencePresenter {
 
-    /** One sample per degree from −180° to 180°, so 0°, 90° and 180° are sampled exactly. */
+    /**
+     * One sample per degree from −180° to 180°, so 0°, 90° and 180° are sampled exactly.
+     */
     static final int POINTS = 361;
 
-    /** Raw field contents. */
-    public record Request(String notDecayed, StandardBasis basis) {}
+    /**
+     * Raw field contents.
+     */
+    public record Request(String notDecayed, StandardBasis basis) {
+    }
 
     /**
      * One outcome of the chosen basis.
      *
-     * @param outcome the outcome's name
-     * @param atZero its probability at φ = 0°
+     * @param outcome   the outcome's name
+     * @param atZero    its probability at φ = 0°
      * @param atQuarter its probability at φ = 90°
-     * @param atHalf its probability at φ = 180°
-     * @param mixture its probability for the classical mixture, which does not depend on φ
+     * @param atHalf    its probability at φ = 180°
+     * @param mixture   its probability for the classical mixture, which does not depend on φ
      */
     public record RowView(
-        String outcome, String atZero, String atQuarter, String atHalf, String mixture) {}
+        String outcome, String atZero, String atQuarter, String atHalf, String mixture) {
+    }
 
     /**
      * Everything the screen shows.
      *
-     * @param setup the chosen chances and amplitude magnitudes
-     * @param basis the chosen basis and which outcome is plotted
-     * @param rows one row per outcome
-     * @param height largest minus smallest probability of the plotted outcome over φ
+     * @param setup          the chosen chances and amplitude magnitudes
+     * @param basis          the chosen basis and which outcome is plotted
+     * @param rows           one row per outcome
+     * @param height         largest minus smallest probability of the plotted outcome over φ
      * @param expectedHeight the closed-form height: 2|α||β| in the X and Y bases, 0 in Z
-     * @param verdict a plain-language reading of the curve
-     * @param plotted the name of the plotted outcome
-     * @param superposition the coherent superposition's curve, φ in degrees
-     * @param mixture the classical mixture's curve, φ in degrees
+     * @param verdict        a plain-language reading of the curve
+     * @param plotted        the name of the plotted outcome
+     * @param superposition  the coherent superposition's curve, φ in degrees
+     * @param mixture        the classical mixture's curve, φ in degrees
      */
     public record Result(
         String setup,
@@ -60,13 +66,14 @@ public final class InterferencePresenter {
         String verdict,
         String plotted,
         List<SeriesPoint> superposition,
-        List<SeriesPoint> mixture) {}
+        List<SeriesPoint> mixture) {
+    }
 
     /**
      * Computes the curve and the table.
      *
      * @throws InvalidInputException if the chance is not a number between 0 and 1, or no basis was
-     *     chosen
+     *                               chosen
      */
     public Result compute(Request r) {
         if (r == null) {
@@ -121,10 +128,14 @@ public final class InterferencePresenter {
         double expected = basis == StandardBasis.COMPUTATIONAL ? 0.0 : 2.0 * alpha * beta;
 
         String verdict;
-        if (height < 1e-9) {
+        if (height < 1e-9 && basis == StandardBasis.COMPUTATIONAL) {
             verdict =
                 "In this basis the probability is the same for every phase: there is no "
                     + "interference. The classical mixture gives the same answer.";
+        } else if (height < 1e-9) {
+            verdict =
+                "The state is purely one outcome, so there is no relative phase to sweep and "
+                    + "no interference. The classical mixture gives the same answer.";
         } else {
             verdict =
                 "The probability of " + names.get(0) + " swings between "
@@ -152,7 +163,7 @@ public final class InterferencePresenter {
 
     private static ComplexMatrix diagonal(double p0) {
         return ComplexMatrix.of(
-            new Complex[][] {
+            new Complex[][]{
                 {Complex.of(p0), Complex.of(0.0)},
                 {Complex.of(0.0), Complex.of(1.0 - p0)}
             });
