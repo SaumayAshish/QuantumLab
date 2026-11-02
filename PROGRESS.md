@@ -42,7 +42,9 @@ here is claimed as working unless it was run.
   an invalid input (`abc`: red message, previous result kept).
 - Interference tab, Y and Z bases, by hand: at P (not decayed) = 0.5 in the circular (Y) basis |+i⟩ gave 50 % / 100 % / 50 % and |−i⟩ gave 50 % / 0 % / 50 % at 0° / 90° / 180°, the fringe height was 1.0000 (equal to 2|α||β|) and the curve followed (1 + sin φ)/2; at P = 0.1 in the Y basis |α| = 0.3162 and |β| = 0.9487, the fringe height was 0.6000, |+i⟩ swung between 20 % and 80 % and the table showed 80 % / 20 % at 90°; at P = 1 in the Y basis the curve was flat at 50 % with fringe height 0.0000. In the computational (Z) basis at P = 0.5 both outcomes were 50 % at every phase, the fringe height 0.0000, and the text said there is no interference. All values match the Born-rule values worked out independently.
 - Wording fix found by the Y-basis check at P = 1: the text said "In this basis the probability is the same for every phase", which is true only for the Z basis; in the X and Y bases the fringe vanishes because the state is purely one outcome. The presenter now says that for X and Y, and keeps the old sentence for Z (two tests changed, one added). In the window, P = 1 in the Y basis now reads "The state is purely one outcome, so there is no relative phase to sweep and no interference. The classical mixture gives the same answer."
-- Classical tab, one "Run once" (λ = 0.693147, t = 1, seed 12345): the draw u = 0.1331 was below P(decayed) = 0.5000, so the nucleus decayed; the table showed a count of 1, observed 100.00 %, theory 50.00 %, standard error ± 50.00 % (equal to √(0.25 / 1)) and deviations −1.00 σ and +1.00 σ. The running-frequency chart stayed empty after the single run.
+- Classical tab, repeated "Run once", by hand (λ = 0.693147, t = 1, seed 12345): after Prepare experiment the table showed zeros (standard error 0.00 %, no NaN) and the running-frequency chart was empty. After one run the draw was u = 0.1331 < 0.5000, so the nucleus decayed; count 1, observed 100.00 %, standard error ± 50.00 % (equal to √(0.25 / 1)), deviations −1.00 σ and +1.00 σ, and the running-frequency chart showed no point. After five runs: 1 not decayed (20.00 %) and 4 decayed (80.00 %), standard error ± 22.36 % (equal to √(0.25 / 5)), deviations −1.34 σ and +1.34 σ, last draw u = 0.5069 ≥ 0.5000 (intact); the observed frequency of "not decayed" stayed at 0 % for four runs and rose to 20 % at run 5, the bars showed 20 % and 80 %, and the counter read "5 runs".
+- Classical tab, Reset and replay, by hand: after Reset runs the same seed gave the same result when run once five times again. The intermediate states matched the formulas (2 runs: 0 and 2, ± 35.36 %, last draw u = 0.2048; 3 runs: 0 and 3, ± 28.87 %, last draw u = 0.1195) and the state after five runs was identical to the first time (1 and 4, 20 % and 80 %, ± 22.36 %, last draw u = 0.5069, same curve). The first run's draw u = 0.1331 was the same in both sessions.
+- Classical tab in a smaller window (about 1090 × 780): the results pane got its own scrollbar; both table rows and both charts stayed fully visible and nothing was squeezed; the expanded "About this experiment" panel scrolled inside itself; the footer text wrapped onto two lines. The pane scrolled to its bottom was not captured.
 - Classical tab checked by hand after the charts were added: the start screen (Theory bars only,
   empty running-frequency chart), 1000 runs (bars and curve agree with the table, the curve settles
   on the Theory line), Reset runs (both charts empty, no NaN), an invalid seed (red message, charts
@@ -69,13 +71,12 @@ here is claimed as working unless it was run.
   (including a barrier above the packet's energy), widths that are rounded to whole grid cells,
   and the rejection of a packet that starts too close to the barrier have automated tests but
   have not been tried in the window.
-- On the Classical tab, repeated "Run once" with the charts (only a single run has been tried by
-  hand since the charts were added) and scrolling the results pane in a small window have not
-  been checked by hand.
+- Only one smaller window size (about 1090 × 780) was tried on the Classical tab; much smaller
+  sizes, scrolling to the bottom of the results pane, and the other tabs in small windows were not.
 - The contents of an exported JSON file have not been inspected by hand (the exporter itself is
   covered by automated tests), and export from the Classical tab has not been run by hand.
-- Reset followed by the same batch reproducing identical counts has been checked in tests, not yet
-  by hand in the window.
+- Reset followed by the same batch reproducing identical counts has been checked by hand on the
+  Classical tab only; on the Superposition tab it has been checked by tests, not in the window.
 - CI passes on Ubuntu and on Windows with Temurin 25 (builds #2 to #8). It has not run with the Microsoft JDK build used locally. Builds after #8 have not been inspected for this file.
 - The independent NumPy checks in the repository cover the infinite well, a single rectangular
   barrier and pure dephasing only. The convergence study, the wave packet, the composite system
