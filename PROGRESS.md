@@ -29,7 +29,8 @@ here is claimed as working unless it was run.
 - Service levels endpoint, by hand with `curl.exe`: the infinite well on [0, 1] with 100 points gave 4.934404, 19.732844 and 44.381001 (a dense NumPy diagonalisation gives the same to about 1e-11); the harmonic oscillator with ω = 1 on [−8, 8] with 800 points gave 0.499988, 1.499938 and 2.499838; an unknown potential, a missing ω and 5 grid points each returned HTTP 400; the largest accepted request (20000 points, 20 levels) took 0.17 s.
 - Service over HTTP: `ServiceOverHttpTest` starts the real application on a random port (Tomcat 11.0.27) and passed 4 tests: `/api/status` returns the expected JSON with a JSON content type; `NaN` as a rate returns HTTP 400 with the error message; the measurement endpoint (seed 2026, 20 trials) returns the pinned outcome sequence 10101111000100100011; and text containing ⟩ arrives intact.
 - Quantum well tab compared with the service, by hand: the infinite well (walls 0 and 1, 100 points, 3 levels) showed 4.934404, 19.732844 and 44.381001 with relative errors −0.0081 %, −0.0322 % and −0.0725 %; the oscillator (ω = 1, −8 to 8, 800 points, 6 levels) showed 0.499988, 1.499938 and 2.499838 for the first three levels. All six numbers are the same as the `/api/levels` answers. Oscillator levels n = 3 to 5 (3.499688, 4.499489, 5.499239) were not compared with the service.
-- Wave packet tab checked by hand with the default inputs (V0 = 2, a = 1, x0 = −20, σ = 3, k0 = 1.5): 181 frames; at the end left 0.750056, inside 5.558e-08, beyond 0.249944, total 1.000000, largest norm error 4.456e-13. The stationary prediction 0.250530 equals an independent Python average of T(E) over the packet's momentum distribution, and the mean energy ⟨E⟩ = 1.1366 equals the value that the grid's own kinetic energy gives; with the grid's energies the same average is 0.249897, close to the simulated 0.249944 (the continuum value differs by about 0.0006 because of the grid). These two Python calculations were a development-time check and are not in the repository. With the slider at t = 16.60 the numbers were 0.749643, 0.036167 and 0.214190 (sum 1.000000) and the current-frame line stood at the same time. The row that was labelled "T at the mean energy" showed 0.244528, which is T at E = k0²/2 = 1.125, not at the mean energy 1.1366; the label and the text were corrected to "central energy" and the result was checked in the window. An invalid barrier height (`abc`) showed the red message and kept the previous result. The Play and Restart buttons were not exercised.
+- Wave packet tab checked by hand with the default inputs (V0 = 2, a = 1, x0 = −20, σ = 3, k0 = 1.5): 181 frames; at the end left 0.750056, inside 5.558e-08, beyond 0.249944, total 1.000000, largest norm error 4.456e-13. The stationary prediction 0.250530 equals an independent Python average of T(E) over the packet's momentum distribution, and the mean energy ⟨E⟩ = 1.1366 equals the value that the grid's own kinetic energy gives; with the grid's energies the same average is 0.249897, close to the simulated 0.249944 (the continuum value differs by about 0.0006 because of the grid). These two Python calculations were a development-time check and are not in the repository. With the slider at t = 16.60 the numbers were 0.749643, 0.036167 and 0.214190 (sum 1.000000) and the current-frame line stood at the same time. The row that was labelled "T at the mean energy" showed 0.244528, which is T at E = k0²/2 = 1.125, not at the mean energy 1.1366; the label and the text were corrected to "central energy" and the result was checked in the window. An invalid barrier height (`abc`) showed the red message and kept the previous result.
+- Wave packet, Play and Restart, by hand with the defaults: Play turned into Pause and the frames advanced; at t = 23.80 the numbers were 0.749908, 0.000356 and 0.249736 (sum 1.000000) and the reflected and transmitted parts stood about 16 to the left and right of the barrier, as 1.5 × (23.80 − 13.3) predicts. Restart went back to an early frame and kept playing; at t = 6.60 the numbers were 0.999571, 0.000360 and 6.902e-05 (sum 1.000000) with the packet centred near x = −10, as −20 + 1.5 × 6.6 predicts.
 - CI: build #5 (commit 6980152) passed on Ubuntu and Windows (Temurin 25) in 1 min 32 s. It is the first run that includes the service module and `ServiceOverHttpTest`. Builds #6 to #8 also passed; #8 (commit 1063d51) is the first with the central-energy label change. The per-job test counts were not inspected.
 - Checked by hand after the shared-worker and scope-note changes: the scope note in the footer of
   each tab; buttons greying out while a computation runs and coming back; an invalid input showing
@@ -40,7 +41,8 @@ here is claimed as working unless it was run.
   height 0.6000, equal to the closed form 2|α||β|), P = 1 (no fringe, stated in the verdict) and
   an invalid input (`abc`: red message, previous result kept).
 - Interference tab, Y and Z bases, by hand: at P (not decayed) = 0.5 in the circular (Y) basis |+i⟩ gave 50 % / 100 % / 50 % and |−i⟩ gave 50 % / 0 % / 50 % at 0° / 90° / 180°, the fringe height was 1.0000 (equal to 2|α||β|) and the curve followed (1 + sin φ)/2; at P = 0.1 in the Y basis |α| = 0.3162 and |β| = 0.9487, the fringe height was 0.6000, |+i⟩ swung between 20 % and 80 % and the table showed 80 % / 20 % at 90°; at P = 1 in the Y basis the curve was flat at 50 % with fringe height 0.0000. In the computational (Z) basis at P = 0.5 both outcomes were 50 % at every phase, the fringe height 0.0000, and the text said there is no interference. All values match the Born-rule values worked out independently.
-- Wording fix found by the Y-basis check at P = 1: the text said "In this basis the probability is the same for every phase", which is true only for the Z basis; in the X and Y bases the fringe vanishes because the state is purely one outcome. The presenter now says that for X and Y, and keeps the old sentence for Z (two tests changed, one added). The new sentence is covered by automated tests; it has not yet been looked at in the window.
+- Wording fix found by the Y-basis check at P = 1: the text said "In this basis the probability is the same for every phase", which is true only for the Z basis; in the X and Y bases the fringe vanishes because the state is purely one outcome. The presenter now says that for X and Y, and keeps the old sentence for Z (two tests changed, one added). In the window, P = 1 in the Y basis now reads "The state is purely one outcome, so there is no relative phase to sweep and no interference. The classical mixture gives the same answer."
+- Classical tab, one "Run once" (λ = 0.693147, t = 1, seed 12345): the draw u = 0.1331 was below P(decayed) = 0.5000, so the nucleus decayed; the table showed a count of 1, observed 100.00 %, theory 50.00 %, standard error ± 50.00 % (equal to √(0.25 / 1)) and deviations −1.00 σ and +1.00 σ. The running-frequency chart stayed empty after the single run.
 - Classical tab checked by hand after the charts were added: the start screen (Theory bars only,
   empty running-frequency chart), 1000 runs (bars and curve agree with the table, the curve settles
   on the Theory line), Reset runs (both charts empty, no NaN), an invalid seed (red message, charts
@@ -63,14 +65,13 @@ here is claimed as working unless it was run.
 
 ## Not yet verified
 
-- The new Interference text for a pure state in the X or Y basis ("The state is purely one
-  outcome, …") has been checked by automated tests only, not yet in the window.
-- On the Wave packet tab only the default inputs have been run by hand. The Play and Restart
-  buttons, other barrier heights (including a barrier above the packet's energy), widths that are
-  rounded to whole grid cells, and the rejection of a packet that starts too close to the barrier
-  have automated tests but have not been tried in the window.
-- On the Classical tab, repeated "Run once" with the charts, and scrolling the results pane in a
-  small window, have not been checked by hand.
+- On the Wave packet tab only the default inputs have been run by hand. Other barrier heights
+  (including a barrier above the packet's energy), widths that are rounded to whole grid cells,
+  and the rejection of a packet that starts too close to the barrier have automated tests but
+  have not been tried in the window.
+- On the Classical tab, repeated "Run once" with the charts (only a single run has been tried by
+  hand since the charts were added) and scrolling the results pane in a small window have not
+  been checked by hand.
 - The contents of an exported JSON file have not been inspected by hand (the exporter itself is
   covered by automated tests), and export from the Classical tab has not been run by hand.
 - Reset followed by the same batch reproducing identical counts has been checked in tests, not yet
@@ -86,6 +87,8 @@ here is claimed as working unless it was run.
 - On small windows the measurement results table can be squeezed; a minimum height is planned.
 - After Reset runs on the Classical tab, the empty running-frequency chart keeps the trial axis of
   the previous batch.
+- On the Classical tab the run counter reads "1 runs" for a single run, and after one run the
+  running-frequency chart shows no point.
 - On the Interference tab, when there is no fringe (the Z basis, or a pure state) the superposition
   curve lies exactly under the classical mixture line, so only one line is visible. The "not a
   number" message there ends with a whole-number example ("e.g. 12 or 0.5"), which suits a
