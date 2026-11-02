@@ -6,7 +6,7 @@ here is claimed as working unless it was run.
 ## Phases
 
 | Phase | Scope                                                                           | Status                                                                                                                                                                                                                                                                                                                                                                                      |
-|-------|---------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|-------|---------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | 0     | Inspect the environment, plan                                                   | Done                                                                                                                                                                                                                                                                                                                                                                                        |
 | 1     | Mathematics: complex linear algebra, qubit, Born rule, measurement, decay model | Done                                                                                                                                                                                                                                                                                                                                                                                        |
 | 2     | First working cat laboratory with desktop UI (modes A, B, C)                    | Done; the CI workflow has run once and passed (see Last verified run)                                                                                                                                                                                                                                                                                                |
@@ -19,10 +19,10 @@ here is claimed as working unless it was run.
 ## Last verified run
 
 - Date: automated tests 2026-11-02.
-- Command: `mvn test` from the repository root, on the code of the commit "wave packet: label T at the central energy k0²/2, not the mean energy".
+- Command: `mvn test` from the repository root, on the code of the commit "interference: say that a pure state has no phase to sweep, instead of blaming the basis".
 - Environment: Windows, Microsoft OpenJDK 25.0.5, Maven 3.9.16, JavaFX 25.0.1.
-- Result: BUILD SUCCESS, 626 tests (math 71, physics 193, simulation 109, desktop 180, service 73), no failures.
-- `mvn install -DskipTests` also succeeded in the same session.
+- Result: BUILD SUCCESS, 627 tests (math 71, physics 193, simulation 109, desktop 181, service 73), no failures.
+- `mvn install -DskipTests` also succeeded earlier in the same session, before the last two small changes to the desktop module.
 - Service: `mvn -pl quantumlab-service spring-boot:run` started on Java 25.0.5 (Spring Boot 4.1.2, Tomcat 11.0.27). Checked by hand with `curl.exe`: `/api/status` returned `{"service":"QuantumLab service","status":"ok"}`; `/api/scope` returned the general explanation; `/api/decay?rate=1&time=2` returned survival 0.1353352832366127, decay 0.8646647167633873 and half-life 0.6931471805599453; rate 0 returned a null half-life; a negative rate, `NaN` and a missing rate each returned HTTP 400 with a JSON error message.
 - Service measurement endpoint, by hand with `curl.exe`: `/api/measurement?p=0.5&basis=Z&seed=2026&trials=20` returned the same twenty outcomes as the pinned regression test (10101111000100100011); p = 0.25, Z, seed 1, 2000 trials gave 518 and 1482 (z-score 0.93, within five sigma); p = 0.5 in the X basis gave 500 of 500 in |+⟩ at phase 0 and 500 of 500 in |−⟩ at phase π; p = 2, an unknown basis and zero trials each returned HTTP 400.
 - The application starts with nine tabs.
@@ -30,7 +30,7 @@ here is claimed as working unless it was run.
 - Service over HTTP: `ServiceOverHttpTest` starts the real application on a random port (Tomcat 11.0.27) and passed 4 tests: `/api/status` returns the expected JSON with a JSON content type; `NaN` as a rate returns HTTP 400 with the error message; the measurement endpoint (seed 2026, 20 trials) returns the pinned outcome sequence 10101111000100100011; and text containing ⟩ arrives intact.
 - Quantum well tab compared with the service, by hand: the infinite well (walls 0 and 1, 100 points, 3 levels) showed 4.934404, 19.732844 and 44.381001 with relative errors −0.0081 %, −0.0322 % and −0.0725 %; the oscillator (ω = 1, −8 to 8, 800 points, 6 levels) showed 0.499988, 1.499938 and 2.499838 for the first three levels. All six numbers are the same as the `/api/levels` answers. Oscillator levels n = 3 to 5 (3.499688, 4.499489, 5.499239) were not compared with the service.
 - Wave packet tab checked by hand with the default inputs (V0 = 2, a = 1, x0 = −20, σ = 3, k0 = 1.5): 181 frames; at the end left 0.750056, inside 5.558e-08, beyond 0.249944, total 1.000000, largest norm error 4.456e-13. The stationary prediction 0.250530 equals an independent Python average of T(E) over the packet's momentum distribution, and the mean energy ⟨E⟩ = 1.1366 equals the value that the grid's own kinetic energy gives; with the grid's energies the same average is 0.249897, close to the simulated 0.249944 (the continuum value differs by about 0.0006 because of the grid). These two Python calculations were a development-time check and are not in the repository. With the slider at t = 16.60 the numbers were 0.749643, 0.036167 and 0.214190 (sum 1.000000) and the current-frame line stood at the same time. The row that was labelled "T at the mean energy" showed 0.244528, which is T at E = k0²/2 = 1.125, not at the mean energy 1.1366; the label and the text were corrected to "central energy" and the result was checked in the window. An invalid barrier height (`abc`) showed the red message and kept the previous result. The Play and Restart buttons were not exercised.
-- CI: build #5 (commit 6980152) passed on Ubuntu and Windows (Temurin 25) in 1 min 32 s. It is the first run that includes the service module and `ServiceOverHttpTest`. The per-job test counts were not inspected.
+- CI: build #5 (commit 6980152) passed on Ubuntu and Windows (Temurin 25) in 1 min 32 s. It is the first run that includes the service module and `ServiceOverHttpTest`. Builds #6 to #8 also passed; #8 (commit 1063d51) is the first with the central-energy label change. The per-job test counts were not inspected.
 - Checked by hand after the shared-worker and scope-note changes: the scope note in the footer of
   each tab; buttons greying out while a computation runs and coming back; an invalid input showing
   the red message and keeping the previous result; Export JSON on the Superposition tab reporting
@@ -39,6 +39,8 @@ here is claimed as working unless it was run.
   fringe, 100 % / 50 % / 0 % at 0° / 90° / 180°, flat 50 % classical mixture), P = 0.1 (fringe
   height 0.6000, equal to the closed form 2|α||β|), P = 1 (no fringe, stated in the verdict) and
   an invalid input (`abc`: red message, previous result kept).
+- Interference tab, Y and Z bases, by hand: at P (not decayed) = 0.5 in the circular (Y) basis |+i⟩ gave 50 % / 100 % / 50 % and |−i⟩ gave 50 % / 0 % / 50 % at 0° / 90° / 180°, the fringe height was 1.0000 (equal to 2|α||β|) and the curve followed (1 + sin φ)/2; at P = 0.1 in the Y basis |α| = 0.3162 and |β| = 0.9487, the fringe height was 0.6000, |+i⟩ swung between 20 % and 80 % and the table showed 80 % / 20 % at 90°; at P = 1 in the Y basis the curve was flat at 50 % with fringe height 0.0000. In the computational (Z) basis at P = 0.5 both outcomes were 50 % at every phase, the fringe height 0.0000, and the text said there is no interference. All values match the Born-rule values worked out independently.
+- Wording fix found by the Y-basis check at P = 1: the text said "In this basis the probability is the same for every phase", which is true only for the Z basis; in the X and Y bases the fringe vanishes because the state is purely one outcome. The presenter now says that for X and Y, and keeps the old sentence for Z (two tests changed, one added). The new sentence is covered by automated tests; it has not yet been looked at in the window.
 - Classical tab checked by hand after the charts were added: the start screen (Theory bars only,
   empty running-frequency chart), 1000 runs (bars and curve agree with the table, the curve settles
   on the Theory line), Reset runs (both charts empty, no NaN), an invalid seed (red message, charts
@@ -61,19 +63,19 @@ here is claimed as working unless it was run.
 
 ## Not yet verified
 
+- The new Interference text for a pure state in the X or Y basis ("The state is purely one
+  outcome, …") has been checked by automated tests only, not yet in the window.
 - On the Wave packet tab only the default inputs have been run by hand. The Play and Restart
   buttons, other barrier heights (including a barrier above the packet's energy), widths that are
   rounded to whole grid cells, and the rejection of a packet that starts too close to the barrier
   have automated tests but have not been tried in the window.
-- On the Interference tab, the Y and Z bases have been checked by automated tests, not yet by hand
-  in the window.
 - On the Classical tab, repeated "Run once" with the charts, and scrolling the results pane in a
   small window, have not been checked by hand.
 - The contents of an exported JSON file have not been inspected by hand (the exporter itself is
   covered by automated tests), and export from the Classical tab has not been run by hand.
 - Reset followed by the same batch reproducing identical counts has been checked in tests, not yet
   by hand in the window.
-- CI passes on Ubuntu and on Windows with Temurin 25 (builds #2 to #5). It has not run with the Microsoft JDK build used locally.
+- CI passes on Ubuntu and on Windows with Temurin 25 (builds #2 to #8). It has not run with the Microsoft JDK build used locally. Builds after #8 have not been inspected for this file.
 - The independent NumPy checks in the repository cover the infinite well, a single rectangular
   barrier and pure dephasing only. The convergence study, the wave packet, the composite system
   and CHSH have no independent script in the repository.
@@ -84,7 +86,8 @@ here is claimed as working unless it was run.
 - On small windows the measurement results table can be squeezed; a minimum height is planned.
 - After Reset runs on the Classical tab, the empty running-frequency chart keeps the trial axis of
   the previous batch.
-- On the Interference tab, when there is no fringe the superposition curve lies exactly under the
-  classical mixture line, so only one line is visible. The "not a number" message there ends with
-  a whole-number example ("e.g. 12 or 0.5"), which suits a probability less well.
+- On the Interference tab, when there is no fringe (the Z basis, or a pure state) the superposition
+  curve lies exactly under the classical mixture line, so only one line is visible. The "not a
+  number" message there ends with a whole-number example ("e.g. 12 or 0.5"), which suits a
+  probability less well.
 - The Tunnelling table layout may need the same fix as the other tables; this has not been confirmed.
