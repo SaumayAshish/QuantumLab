@@ -13,20 +13,21 @@ here is claimed as working unless it was run.
 | 3     | Finite-difference 1D Schrödinger solver                                         | Done: solver, convergence study and two screens (Quantum well, Convergence)                                                                                                                                                                                                                                                                                                                 |
 | 4     | Barriers, tunnelling, wave packet, composite systems, decoherence               | Done: stationary tunnelling through one or two barriers (Tunnelling screen), time-dependent wave packet (Crank–Nicolson), two-qubit composite system with CHSH (Composite system screen), and dephasing of a single qubit (Decoherence screen)                                                                                                                                              |
 | 5     | Desktop polish                                                                  | Done, apart from the small items under Known issues: tables sized to their rows, logarithmic trial axis, distinct series colours, untruncated titles, one shared worker and table-column helper for all screens, footer scope notes taken from the explanation catalogue, re-solve when the potential is switched, charts for the classical screen, and a screen for the interference curve |
-| 6     | Optional Spring Boot service                                                    | In progress. Done: a service module (`quantumlab-service`, Spring Boot 4.1.2) with five read-only endpoints (`/api/status`, `/api/scope`, `/api/decay`, `/api/measurement`, `/api/levels`), checked by unit tests and by hand with curl. Remaining: a test that starts the server and calls it over HTTP, an ADR and the README section                                                                                                                                                                                                                                                                                                                                                                              |
+| 6     | Optional Spring Boot service                                                    | Done: a service module (`quantumlab-service`, Spring Boot 4.1.2) with five read-only endpoints (`/api/status`, `/api/scope`, `/api/decay`, `/api/measurement`, `/api/levels`), local only and without authentication (ADR 0006), checked by unit tests, by one test that starts the real server and calls it over HTTP, and by hand with curl |
 | 7     | Release quality                                                                 | Done: line-ending policy (`.gitattributes`), independent NumPy checks in `docs/validation/`, code pushed to GitHub, CI passing on Ubuntu and Windows, docs reviewed against the code. Open items are the hand checks and polish lists below                                                                                                                                                                |
 
 ## Last verified run
 
-- Dates: automated tests 2026-11-02; 
-- Command: `mvn test` from the repository root, on the code of commit b5a4dcb.
+- Date: automated tests 2026-11-02.
+- Command: `mvn test` from the repository root, on the code of commit 58d3d77.
 - Environment: Windows, Microsoft OpenJDK 25.0.5, Maven 3.9.16, JavaFX 25.0.1.
-- Result: BUILD SUCCESS, 622 tests (math 71, physics 193, simulation 109, desktop 180, service 69), no failures.
+- Result: BUILD SUCCESS, 626 tests (math 71, physics 193, simulation 109, desktop 180, service 73), no failures.
 - `mvn install -DskipTests` also succeeded in the same session.
 - Service: `mvn -pl quantumlab-service spring-boot:run` started on Java 25.0.5 (Spring Boot 4.1.2, Tomcat 11.0.27). Checked by hand with `curl.exe`: `/api/status` returned `{"service":"QuantumLab service","status":"ok"}`; `/api/scope` returned the general explanation; `/api/decay?rate=1&time=2` returned survival 0.1353352832366127, decay 0.8646647167633873 and half-life 0.6931471805599453; rate 0 returned a null half-life; a negative rate, `NaN` and a missing rate each returned HTTP 400 with a JSON error message.
 - Service measurement endpoint, by hand with `curl.exe`: `/api/measurement?p=0.5&basis=Z&seed=2026&trials=20` returned the same twenty outcomes as the pinned regression test (10101111000100100011); p = 0.25, Z, seed 1, 2000 trials gave 518 and 1482 (z-score 0.93, within five sigma); p = 0.5 in the X basis gave 500 of 500 in |+⟩ at phase 0 and 500 of 500 in |−⟩ at phase π; p = 2, an unknown basis and zero trials each returned HTTP 400.
 - The application starts with nine tabs.
 - Service levels endpoint, by hand with `curl.exe`: the infinite well on [0, 1] with 100 points gave 4.934404, 19.732844 and 44.381001 (a dense NumPy diagonalisation gives the same to about 1e-11); the harmonic oscillator with ω = 1 on [−8, 8] with 800 points gave 0.499988, 1.499938 and 2.499838; an unknown potential, a missing ω and 5 grid points each returned HTTP 400; the largest accepted request (20000 points, 20 levels) took 0.17 s.
+- Service over HTTP: `ServiceOverHttpTest` starts the real application on a random port (Tomcat 11.0.27) and passed 4 tests: `/api/status` returns the expected JSON with a JSON content type; `NaN` as a rate returns HTTP 400 with the error message; the measurement endpoint (seed 2026, 20 trials) returns the pinned outcome sequence 10101111000100100011; and text containing ⟩ arrives intact.
 - Checked by hand after the shared-worker and scope-note changes: the scope note in the footer of
   each tab; buttons greying out while a computation runs and coming back; an invalid input showing
   the red message and keeping the previous result; Export JSON on the Superposition tab reporting
@@ -72,6 +73,7 @@ here is claimed as working unless it was run.
   dephasing only. The convergence study, the wave packet, the composite system and CHSH have no
   independent script yet.
 - The service module has not run in CI yet.
+- The `/api/levels` numbers have been compared with NumPy, not by eye with the Quantum well tab.
 
 
 ## Known issues and polish

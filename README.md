@@ -7,7 +7,7 @@ measurement. Every number on screen comes from tested code, every experiment can
 exactly from its seed, and every screen says what it models and what it does not.
 
 > **Status: early development (version 0.1.0-SNAPSHOT).** Only the features listed under
-> [Implemented](#implemented) exist. Everything under [Planned](#planned) is not built yet.
+> [Implemented](#implemented) exist.
 
 ## Implemented
 
@@ -79,6 +79,14 @@ independent plane-wave calculation. The screen compares the quantum answer with 
 barrier top, and for two barriers shows the resonances. Stationary only: no wave packet moves, and
 nothing is measured.
 
+**Optional HTTP service.** A small read-only Spring Boot service (`quantumlab-service`) that
+answers five questions over HTTP on this computer: `/api/status`, `/api/scope` (what the project
+models and what it does not), `/api/decay` (survival and decay probability), `/api/measurement`
+(a seeded batch of measurements, same JSON as the exporter) and `/api/levels` (lowest energy levels
+for the infinite well or the harmonic oscillator). It has no database, no login and no state. It
+listens on 127.0.0.1 only and is not meant to be exposed to a network. Bad input gets HTTP 400 with
+a JSON message.
+
 **Across the screens.**
 
 - Seeded, reproducible random numbers: the same seed gives the same results, and "reset" replays
@@ -100,12 +108,8 @@ nothing is measured.
   entanglement measures and CHSH, and single-qubit density matrices with pure dephasing.
 - `quantumlab-simulation`: experiment sessions, outcome logs, statistics, JSON/CSV export, the
   phase-dependence (interference) curve for a qubit, and the explanation catalogue.
-
-## Planned
-
-Not implemented yet:
-
-- An optional Spring Boot service.
+- `quantumlab-service`: the optional HTTP service described above. It reuses the simulation and
+  physics code and adds no physics of its own.
 
 ## Scientific scope
 
@@ -144,6 +148,29 @@ mvn -pl quantumlab-desktop javafx:run
 In IntelliJ IDEA you can instead run `dev.quantumlab.desktop.QuantumLabLauncher`, adding the VM
 option `--enable-native-access=ALL-UNNAMED`.
 
+## Run the optional HTTP service
+
+```
+mvn install -DskipTests
+mvn -pl quantumlab-service spring-boot:run
+```
+
+It listens on http://127.0.0.1:8080. In a second terminal (on Windows PowerShell use `curl.exe`;
+on Linux or macOS use `curl`):
+
+```
+curl.exe http://127.0.0.1:8080/api/status
+curl.exe http://127.0.0.1:8080/api/scope
+curl.exe "http://127.0.0.1:8080/api/decay?rate=1&time=2"
+curl.exe "http://127.0.0.1:8080/api/measurement?p=0.5&basis=Z&seed=2026&trials=20"
+curl.exe "http://127.0.0.1:8080/api/levels?potential=well&xMin=0&xMax=1&points=100&levels=3"
+```
+
+The harmonic oscillator needs `omega`, for example
+`potential=harmonic&omega=1&xMin=-8&xMax=8&points=800&levels=3`. The service has no
+authentication and is bound to the local machine on purpose; see
+[ADR 0006](docs/adr/0006-optional-http-service.md).
+
 ## Project layout
 
 ```
@@ -152,6 +179,7 @@ quantumlab-physics      qubits, Born rule, measurement, decay model, Schrödinge
                         scattering, time evolution, two-qubit states
 quantumlab-simulation   experiment sessions, statistics, export, explanations
 quantumlab-desktop      JavaFX application
+quantumlab-service      optional read-only HTTP service (Spring Boot)
 docs/                   architecture decisions, mathematics notes, validation notes
 ```
 
