@@ -7,7 +7,9 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-/** The scope contract for the wave-packet screen. */
+/**
+ * The scope contract for the wave-packet screen.
+ */
 class WavePacketExplanationTest {
 
     private static boolean anyContains(List<String> lines, String fragment) {
@@ -35,7 +37,7 @@ class WavePacketExplanationTest {
         ModeExplanation m = ExplanationCatalog.wavePacket();
         assertTrue(m.mathematics().contains("Crank–Nicolson"));
         assertTrue(m.mathematics().contains("exp(−2σ²(k − k0)²)"));
-        assertTrue(anyContains(m.represents(), "not T at the mean energy alone"));
+        assertTrue(anyContains(m.represents(), "not T at the central energy alone"));
     }
 
     @Test

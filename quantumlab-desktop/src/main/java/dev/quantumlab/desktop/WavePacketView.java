@@ -139,7 +139,9 @@ public final class WavePacketView {
         return root;
     }
 
-    /** Stops the playback and the worker thread. Call when the window closes. */
+    /**
+     * Stops the playback and the worker thread. Call when the window closes.
+     */
     public void shutdown() {
         timeline.stop();
         worker.shutdown();
@@ -148,7 +150,7 @@ public final class WavePacketView {
     // ---------------------------------------------------------------- layout
 
     private Node buildInputPane() {
-        for (TextField f : new TextField[] {height, width, centre, sigma, waveNumber}) {
+        for (TextField f : new TextField[]{height, width, centre, sigma, waveNumber}) {
             f.setPrefColumnCount(8);
         }
         GridPane form = new GridPane();
@@ -183,7 +185,7 @@ public final class WavePacketView {
         theory.setVgap(4);
         theory.getColumnConstraints().add(new ColumnConstraints(170));
         addRow(theory, 0, "Stationary prediction", theoryOut);
-        addRow(theory, 1, "T at the mean energy", atMeanOut);
+        addRow(theory, 1, "T at the central energy", atMeanOut);
         addRow(theory, 2, "Largest norm error", normOut);
 
         setupOut.setWrapText(true);
@@ -316,7 +318,7 @@ public final class WavePacketView {
         current = r;
         setupOut.setText(r.setup());
         theoryOut.setText(r.theoryAverage());
-        atMeanOut.setText(r.theoryAtMeanEnergy());
+        atMeanOut.setText(r.theoryAtCentralEnergy());
         normOut.setText(r.normCheck());
         summaryOut.setText(r.summary());
         noteOut.setText(r.note());

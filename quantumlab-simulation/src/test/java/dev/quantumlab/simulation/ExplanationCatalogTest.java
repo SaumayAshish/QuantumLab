@@ -80,6 +80,7 @@ class ExplanationCatalogTest {
         assertTrue(anyContains(no, "consciousness"));
         assertTrue(anyContains(no, "decoherence screen is a separate single-qubit model"));
     }
+
     @Test
     @DisplayName("the interference mode says the phase is a free input and nothing is measured")
     void interferenceCaveats() {

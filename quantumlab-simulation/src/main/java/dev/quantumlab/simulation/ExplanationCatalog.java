@@ -190,7 +190,7 @@ public final class ExplanationCatalog {
                     + "conserved by the numerical scheme.",
                 "Agreement with stationary theory: the probability beyond the barrier at "
                     + "late time matches T(E) averaged over the packet's spread of "
-                    + "energies, not T at the mean energy alone."),
+                    + "energies, not T at the central energy alone."),
             List.of(
                 "A numerical solution on a grid (spacing 0.1) with hard walls at ±80: "
                     + "results depend on the grid, and the barrier width is rounded to "

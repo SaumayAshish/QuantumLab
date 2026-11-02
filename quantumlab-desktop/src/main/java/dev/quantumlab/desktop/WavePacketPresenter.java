@@ -28,27 +28,39 @@ public final class WavePacketPresenter {
     public static final int FRAMES = 181;
     public static final double HALF_WIDTH = 80.0;
     public static final double SPACING = 0.1;
-    /** Every second grid point is kept for display. */
+    /**
+     * Every second grid point is kept for display.
+     */
     public static final int DISPLAY_STRIDE = 2;
 
     private static final int GRID_POINTS = (int) Math.round(2.0 * HALF_WIDTH / SPACING) - 1;
     private static final double EDGE = 1e-9;
     private static final int MAX_STEPS = 100_000;
 
-    /** Raw field contents. */
-    public record Request(String height, String width, String centre, String sigma, String waveNumber) {}
-
-    /** One stored snapshot. The array holds the densities at the displayed positions only. */
-    public record Frame(double time, double[] density, double left, double inside, double right) {}
-
-    /** The numbers shown beside the animation for one frame, already formatted. */
-    public record FrameText(String time, String left, String inside, String right, String total) {}
+    /**
+     * Raw field contents.
+     */
+    public record Request(String height, String width, String centre, String sigma,
+                          String waveNumber) {
+    }
 
     /**
-     * @param positions the displayed x values (shared by every frame)
+     * One stored snapshot. The array holds the densities at the displayed positions only.
+     */
+    public record Frame(double time, double[] density, double left, double inside, double right) {
+    }
+
+    /**
+     * The numbers shown beside the animation for one frame, already formatted.
+     */
+    public record FrameText(String time, String left, String inside, String right, String total) {
+    }
+
+    /**
+     * @param positions      the displayed x values (shared by every frame)
      * @param barrierOutline the barrier drawn at the height of the initial density peak
-     * @param leftOverTime / insideOverTime / rightOverTime the probability in each region against time
-     * @param theoryLine the stationary prediction as a horizontal line over the whole run
+     * @param leftOverTime   / insideOverTime / rightOverTime the probability in each region against time
+     * @param theoryLine     the stationary prediction as a horizontal line over the whole run
      */
     public record Result(
         String setup,
@@ -62,13 +74,14 @@ public final class WavePacketPresenter {
         List<SeriesPoint> rightOverTime,
         List<SeriesPoint> theoryLine,
         String theoryAverage,
-        String theoryAtMeanEnergy,
+        String theoryAtCentralEnergy,
         String finalRight,
         String finalLeft,
         String finalInside,
         String normCheck,
         String summary,
-        String note) {}
+        String note) {
+    }
 
     public Result compute(Request r) {
         if (r == null) {
@@ -211,7 +224,7 @@ public final class WavePacketPresenter {
                 + ". Stationary theory, averaging T(E) over the packet's spread of energies,"
                 + " predicts "
                 + TunnellingPresenter.probability(theory)
-                + "; T at the mean energy alone would give "
+                + "; T at the central energy k0²/2 alone would give "
                 + TunnellingPresenter.probability(atMean)
                 + ". The two differ because a packet is a mixture of energies and T depends on"
                 + " energy.";
@@ -243,7 +256,9 @@ public final class WavePacketPresenter {
             note);
     }
 
-    /** The formatted numbers for one frame. */
+    /**
+     * The formatted numbers for one frame.
+     */
     public static FrameText describe(Frame frame) {
         return new FrameText(
             Formatting.fixed(frame.time(), 2),

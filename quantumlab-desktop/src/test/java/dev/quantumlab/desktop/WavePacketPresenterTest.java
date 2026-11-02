@@ -52,7 +52,7 @@ class WavePacketPresenterTest {
     void defaultRunPhysics() {
         Result r = presenter.compute(defaults());
         assertEquals(0.250530, number(r.theoryAverage()), 1e-6);
-        assertEquals(0.244528, number(r.theoryAtMeanEnergy()), 1e-6);
+        assertEquals(0.244528, number(r.theoryAtCentralEnergy()), 1e-6);
         assertEquals(0.249944, number(r.finalRight()), 1e-5);
         assertEquals(0.750056, number(r.finalLeft()), 1e-5);
         assertEquals(number(r.theoryAverage()), number(r.finalRight()), 2e-3);
